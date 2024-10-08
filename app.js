@@ -24,9 +24,13 @@ async function run() {
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  }catch(e){
+
+    console.log(`ERROR: Cannot connect to the database ${e}`);
+
+
   } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
+    
   }
 }
 run().catch(console.dir);
@@ -34,17 +38,19 @@ run().catch(console.dir);
 
 app.post("/", (req, res, next) => {
 
+  //log the tool call list for examination
+  console.log(JSON.stringify(req.body.message.toolCallList));
+
   //get tool call id
   const callId = req.body.message.toolCallList[0].id;
   const responseObj = {
     results: [
         {
             "toolCallId": callId,
-            "result": "Michael Scimeca, he is the mastermind behind this operation"
+            "result":{unitNumber: "35-F", "balance": 123.34} 
         }
     ]};
 
-  console.log(JSON.stringify(req.body));
   res.send(responseObj);
   
 });
