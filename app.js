@@ -33,8 +33,19 @@ run().catch(console.dir);
 
 
 app.post("/", (req, res, next) => {
-  console.log(JSON.stringify(req.body));
-  res.send(req.body);
+
+  //get tool call id
+  const callId = req.body.message.toolCallList[0].id;
+  const responseObj = {
+    results: [
+        {
+            "toolCallId": callId,
+            "result": "Angelyn"
+        }
+    ]};
+
+  //console.log(JSON.stringify(req.body));
+  res.send(responseObj);
   
 });
 
