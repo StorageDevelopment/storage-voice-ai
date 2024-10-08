@@ -40,7 +40,7 @@ app.post("/", (req, res, next) => {
     results: [
         {
             "toolCallId": callId,
-            "result": "Angelyn"
+            "result": "Michael Scimeca, he is the mastermind behind this operation"
         }
     ]};
 
