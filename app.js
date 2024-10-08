@@ -4,6 +4,8 @@ const port = process.env.PORT || 3001;
 const dbPassword = process.env.DBPASSWORD || 'fakepassword'
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
+app.use(express.json());
+
 const uri = `mongodb+srv://alanpurugganan:${dbPassword}@mystoragecluster.ajez3.mongodb.net/?retryWrites=true&w=majority&appName=MyStorageCluster`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -30,7 +32,11 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get("/", (req, res) => res.type('html').send("Hello World"));
+app.post("/", (req, res, next) => {
+  console.log(JSON.stringify(req.body));
+  res.send(req.body);
+  
+});
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
