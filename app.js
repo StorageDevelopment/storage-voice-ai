@@ -44,7 +44,7 @@ app.post("/", (req, res, next) => {
         }
     ]};
 
-  //console.log(JSON.stringify(req.body));
+  console.log(JSON.stringify(req.body));
   res.send(responseObj);
   
 });
