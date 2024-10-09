@@ -36,18 +36,74 @@ async function run() {
 run().catch(console.dir);
 
 
-app.post("/", (req, res, next) => {
+app.post("/", async (req, res, next) => {
+
+  const db = client.db("my_storage");
+
+  const users = db.collection("users");
 
   //log the tool call list for examination
-  console.log(JSON.stringify(req.body.message.toolCallList));
+  console.log(JSON.stringify(req.body.message.toolCalls));
+
+  //get the first toolCall
+  const toolCall = req.body.message.toolCalls[0];
+
+  //get the toolname
+  const toolName = toolCall.function.name;
+
+  let result;
+
+  if(toolName === "makePayment"){
+
+    //get the name
+    const name = toolCall.function.arguments.name;
+
+    //get the amount
+    const payAmt = parseFloat(toolCall.function.arguments.amount);
+
+    const userDoc = await users.findOne({
+      name: name
+    });
+
+    //get the current balance
+    let balance = userDoc.balance;
+
+    balance = Math.max(0, balance - payAmt)
+
+    //update the document
+    const filter = { name: name };
+    
+    await users.updateOne(filter, { $set: { balance: balance}} );
+
+    result = {"newBalance": balance};
+
+  }else if (toolName === "setBalance"){
+
+    //get the name
+    const name = toolCall.function.arguments.name;
+
+    //get the amount
+    const newBalance = parseFloat(toolCall.function.arguments.amount);
+
+    //update the document
+    const filter = { name: name };
+
+    const options = { upsert: true };
+    
+    await users.updateOne(filter, { $set: {name: name, balance: newBalance}}, options );
+
+    result = {"newBalance": newBalance};
+  }
+
+
 
   //get tool call id
-  const callId = req.body.message.toolCallList[0].id;
+  const callId = toolCall.id;
   const responseObj = {
     results: [
         {
             "toolCallId": callId,
-            "result":{unitNumber: "35-F", "balance": 123.34} 
+            "result": result
         }
     ]};
 
