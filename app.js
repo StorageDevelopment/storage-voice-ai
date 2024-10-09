@@ -93,9 +93,18 @@ app.post("/", async (req, res, next) => {
     await users.updateOne(filter, { $set: {name: name, balance: newBalance}}, options );
 
     result = {"newBalance": newBalance};
+
+  }else if (toolName === "getBalance"){
+
+    //get the name
+    const name = toolCall.function.arguments.name;
+    
+    const userDoc = await users.findOne({
+      name: name
+    });
+
+    result = {"currentBalance": userDoc.balance};
   }
-
-
 
   //get tool call id
   const callId = toolCall.id;
