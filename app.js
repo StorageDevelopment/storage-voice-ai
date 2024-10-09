@@ -77,7 +77,7 @@ app.post("/", async (req, res, next) => {
 
     result = {"newBalance": balance};
 
-  }else if (toolName === "setBalance"){
+  }else if (toolName === "setInvoice"){
 
     //get the name
     const name = toolCall.function.arguments.name;
