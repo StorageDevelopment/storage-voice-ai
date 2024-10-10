@@ -30,7 +30,7 @@ async function run() {
   } catch (e) {
     console.log(`ERROR: Cannot connect to the database ${e}`);
   } finally {
-    await client.close();
+    //await client.close();
   }
 }
 run().catch(console.dir);
