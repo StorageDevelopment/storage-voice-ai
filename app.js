@@ -1,21 +1,9 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
-const dbPassword = process.env.DBPASSWORD || 'fakepassword'
-const { MongoClient, ServerApiVersion } = require('mongodb');
-
 app.use(express.json());
 
-const uri = `mongodb+srv://alanpurugganan:${dbPassword}@mystoragecluster.ajez3.mongodb.net/?retryWrites=true&w=majority&appName=MyStorageCluster`;
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
+const client = require("./mongodb.js");
 
 async function run() {
   try {
@@ -23,27 +11,24 @@ async function run() {
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  }catch(e){
-
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
+  } catch (e) {
     console.log(`ERROR: Cannot connect to the database ${e}`);
-
-
   } finally {
-    
+    await client.close();
   }
 }
 run().catch(console.dir);
 
-
 app.post("/", async (req, res, next) => {
-
   const db = client.db("my_storage");
 
   const users = db.collection("users");
 
   //log the tool call list for examination
-  console.log(JSON.stringify(req.body.message.toolCalls));
+  console.log(JSON.stringify("toolCalls:" + req.body.message.toolCalls));
 
   //get the first toolCall
   const toolCall = req.body.message.toolCalls[0];
@@ -53,76 +38,75 @@ app.post("/", async (req, res, next) => {
 
   let result;
 
-  if(toolName === "makePayment"){
-
+  if (toolName === "makePayment") {
     //get the name
-    const name = toolCall.function.arguments.name;
+    const name = toolCall.function.arguments.makePaymentName;
 
     //get the amount
-    const payAmt = parseFloat(toolCall.function.arguments.amount);
+    const payAmt = parseFloat(toolCall.function.arguments.makePaymentAmount);
 
     const userDoc = await users.findOne({
-      name: name
+      name: name,
     });
 
     //get the current balance
     let balance = userDoc.balance;
 
-    balance = Math.max(0, balance - payAmt)
+    balance = Math.max(0, balance - payAmt);
 
     //update the document
     const filter = { name: name };
-    
-    await users.updateOne(filter, { $set: { balance: balance}} );
 
-    result = {"newBalance": balance};
+    await users.updateOne(filter, { $set: { balance: balance } });
 
-  }else if (toolName === "setInvoice"){
-
+    result = { newBalance: balance };
+  } else if (toolName === "setInvoice") {
     //get the name
-    const name = toolCall.function.arguments.name;
+    const name = toolCall.function.arguments.setInvoiceName;
 
     //get the amount
-    const newBalance = parseFloat(toolCall.function.arguments.amount);
+    const newBalance = parseFloat(toolCall.function.arguments.setInvoiceAmount);
 
     //update the document
     const filter = { name: name };
 
     const options = { upsert: true };
-    
-    await users.updateOne(filter, { $set: {name: name, balance: newBalance}}, options );
 
-    result = {"newBalance": newBalance};
+    await users.updateOne(
+      filter,
+      { $set: { name: name, balance: newBalance } },
+      options
+    );
 
-  }else if (toolName === "getBalance"){
-
+    result = { newBalance: newBalance };
+  } else if (toolName === "getBalance") {
     //get the name
-    const name = toolCall.function.arguments.name;
-    
+    const name = toolCall.function.arguments.getBalanceName;
+
     const userDoc = await users.findOne({
-      name: name
+      name: name,
     });
 
-    result = {"currentBalance": userDoc.balance};
+    result = { currentBalance: userDoc.balance };
   }
 
   //get tool call id
   const callId = toolCall.id;
   const responseObj = {
     results: [
-        {
-            "toolCallId": callId,
-            "result": result
-        }
-    ]};
+      {
+        toolCallId: callId,
+        result: result,
+      },
+    ],
+  };
 
   res.send(responseObj);
-  
 });
 
-const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+const server = app.listen(port, () =>
+  console.log(`Example app listening on port ${port}!`)
+);
 
 server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 120 * 1000;
-
-
