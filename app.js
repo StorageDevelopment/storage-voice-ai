@@ -41,12 +41,13 @@ app.post("/", async (req, res, next) => {
   const db = client.db("my_storage");
 
   const users = db.collection("users");
-
-  //log the tool call list for examination
-  console.log(JSON.stringify("toolCalls:" + req.body.message.toolCalls));
-
+  
   //get the first toolCall
   const toolCall = req.body.message.toolCalls[0];
+
+  //log the tool call list for examination
+  console.log("toolCalls:" + JSON.stringify(toolCall));
+
 
   //get the toolname
   const toolName = toolCall.function.name;
