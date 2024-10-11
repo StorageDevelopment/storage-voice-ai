@@ -2,7 +2,9 @@ const express = require("express");
 const app = express();
 const dbPassword = process.env.DBPASSWORD || "fakepassword";
 const port = process.env.PORT || 3001;
+const emailPassword = process.env.EMAILPASSWORD || "fakepassword";
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const nodemailer = require('nodemailer');
 
 app.use(express.json());
 
@@ -101,6 +103,40 @@ app.post("/", async (req, res, next) => {
     });
 
     result = { currentBalance: userDoc.balance };
+  } else if (toolName === "sendEmail") {
+
+    const emailAddy = toolCall.function.arguments.emailAddy;
+    const emailSubject = toolCall.function.arguments.emailSubject;
+    const emailBody = toolCall.function.arguments.emailBody;
+
+    
+
+    var transporter = nodemailer.createTransport({
+      service: 'yahoo',
+      auth: {
+        user: 'alan.purugganan@yahoo.com',
+        pass: emailPassword
+      }
+    });
+
+    var mailOptions = {
+      from: 'alan.purugganan@yahoo.com',
+      to: `${emailAddy}`,
+      subject: `${emailSubject}`,
+      text: `${emailBody}`
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+
+    result = { message: "email sent successfully" };
+
+
   }
 
   //get tool call id
