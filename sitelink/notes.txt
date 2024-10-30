@@ -1,0 +1,23 @@
+SiteLink Transaction API Documentation
+http://apidoc.sitelink.com
+PDF Password: "M9f8xCBjtCyGIeTowvOU" without the quotes
+
+SiteLink Reporting API Documentation
+http://apireportingdoc.sitelink.com
+PDF Password: "M9f8xCBjtCyGIeTowvOU" without the quotes
+
+API License Key: MYSTORAGKF8O89FYPI9F
+
+You can use the below credentials for your API testing:
+Corporate Code: CCTST
+Location Code: Demo
+Corp Username: Administrator:::YOUR_API_KEY_HERE
+Corp Password: Demo
+
+https://api.smdservers.net/CCWs_3.5/CallCenterWs.asmx?WSDL
+
+http://status.sitelink.com
+
+If you have any questions or problems please feel free to email our support team at apisupport@sitelink.com with any questions.
+
+http://www.sitelink.com/support/training-videos/
