@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc",
-    "dev": "nodemon --exec ts-node src/server.ts"
+    "dev": "nodemon --exec ts-node src/server.ts",
+    "test": "mocha -r ts-node/register tests/**/*.test.ts"
   },
   "keywords": [],
   "author": "",
