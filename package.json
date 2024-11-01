@@ -13,12 +13,14 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "soap": "^1.1.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/mocha": "^10.0.9",
     "@types/node": "^22.8.5",
+    "@types/sax": "^1.2.7",
     "@types/supertest": "^6.0.2",
     "mocha": "^10.8.2",
     "nodemon": "^3.1.7",
