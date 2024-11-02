@@ -3,6 +3,7 @@ export class StorageUnit{
     public constructor() {
         this._width = 0;
         this._length = 0;
+        this._unitId = 0;
 
     }
     private _width: number;
@@ -24,5 +25,16 @@ export class StorageUnit{
     public set length(value: number) {
         this._length = value;
     }
+
+    private _unitId: number;
+
+    public get unitId(): number {
+        return this._unitId;
+    }
+
+    public set unitId(value: number) {
+        this._unitId = value;
+    }
+
 } 
 

@@ -48,6 +48,7 @@ class SiteLink {
             const storageUnit: StorageUnit = new StorageUnit();
             storageUnit.width = unit.dcWidth;
             storageUnit.length = unit.dcLength;
+            storageUnit.unitId = unit.UnitID;
             storageUnits.push(storageUnit);
 
         });
