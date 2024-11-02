@@ -45,10 +45,7 @@ class SiteLink {
 
         soapResult[0].UnitsInformation_v2Result.diffgram.NewDataSet.Table.forEach((unit: any) => {
 
-            const storageUnit: StorageUnit = new StorageUnit();
-            storageUnit.width = unit.dcWidth;
-            storageUnit.length = unit.dcLength;
-            storageUnit.unitId = unit.UnitID;
+            const storageUnit: StorageUnit = new StorageUnit(unit);
             storageUnits.push(storageUnit);
 
         });
