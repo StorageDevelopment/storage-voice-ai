@@ -11,6 +11,5 @@ export const getExample = asyncHandler(async (req: Request, res: Response) => {
   const query = req.query;
   units = storageUnits.filter(query);
   //const x = JSON.stringify(units);
-  console.log(units);
   res.send(units);
 });
