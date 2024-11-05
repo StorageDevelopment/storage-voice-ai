@@ -37,6 +37,35 @@ export class StorageUnits {
     });
   };
 
+  DOfindByRate = (args: string) => {
+    const [min, max] = JSON.parse(args);
+    this.storageUnits = this.storageUnits.filter((unit: any) => {
+      const webRate = parseInt(unit._dcWebRate);
+      return webRate >= min && webRate <= max;
+    });
+  };
+
+  DOsortByPrice = (args: "asc" | "desc") => {
+    const sortOrder = args === "asc" ? 1 : -1;
+    this.storageUnits.sort((a: any, b: any) => {
+      const priceA = parseInt(a._dcWebRate);
+      const priceB = parseInt(b._dcWebRate);
+      return (priceA - priceB) * sortOrder;
+    });
+  };
+
+  DOlimit = (args: number) => {
+    const subUnits: any[] = [];
+    this.storageUnits.some((unit, index) => {
+      if (index < args) {
+        subUnits.push(unit);
+        return false;
+      }
+      return true;
+    });
+    this.storageUnits = subUnits;
+  };
+
   filter = (query: any) => {
     const keys = Object.keys(query);
     for (const key in keys) {
