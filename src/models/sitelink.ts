@@ -52,6 +52,19 @@ class SiteLink {
 
         return storageUnits;
     }
+
+    public async filterUnits(filterFunc : (x : StorageUnit) => boolean): Promise<StorageUnit[]> {
+
+        if(client === null){
+            await this.init();
+        }
+
+        const storageUnits: StorageUnit[] = await this.getAllUnits();
+
+        const filteredUnits: StorageUnit[] = storageUnits.filter(filterFunc);
+
+        return filteredUnits;
+    }
 }
 
 const siteLink = new SiteLink();
