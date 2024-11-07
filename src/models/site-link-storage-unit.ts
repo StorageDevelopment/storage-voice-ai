@@ -1,0 +1,59 @@
+export class SiteLinkStorageUnit {
+    public retCode: string | null;
+    public unitTypeID: string | null;
+    public sTypeName: string | null;
+    public iDefLeaseNum: string | null;
+    public unitID: string | null;
+    public sUnitName: string | null;
+    public dcWidth: string | null;
+    public dcLength: string | null;
+    public bClimate: string | null;
+    public dcStdRate: string | null;
+    public bRented: string | null;
+    public bInside: string | null;
+    public bPower: string | null;
+    public bAlarm: string | null;
+    public iFloor: string | null;
+    public bWaitingListReserved: string | null;
+    public bCorporate: string | null;
+    public bRentable: string | null;
+    public dcBoardRate: string | null;
+    public dcPushRate: string | null;
+    public dcTax1Rate: string | null;
+    public dcTax2Rate: string | null;
+    public sUnitDesc: string | null;
+    public dcStdWeeklyRate: string | null;
+    public dcMapTop: string | null;
+    public dcMapLeft: string | null;
+    public dcMapTheta: string | null;
+
+    constructor(data: any) {
+        this.retCode = data.retCode ?? null;
+        this.unitTypeID = data.unitTypeID ?? null;
+        this.sTypeName = data.sTypeName ?? null;
+        this.iDefLeaseNum = data.iDefLeaseNum ?? null;
+        this.unitID = data.unitID ?? null;
+        this.sUnitName = data.sUnitName ?? null;
+        this.dcWidth = data.dcWidth ?? null;
+        this.dcLength = data.dcLength ?? null;
+        this.bClimate = data.bClimate ?? null;
+        this.dcStdRate = data.dcStdRate ?? null;
+        this.bRented = data.bRented ?? null;
+        this.bInside = data.bInside ?? null;
+        this.bPower = data.bPower ?? null;
+        this.bAlarm = data.bAlarm ?? null;
+        this.iFloor = data.iFloor ?? null;
+        this.bWaitingListReserved = data.bWaitingListReserved ?? null;
+        this.bCorporate = data.bCorporate ?? null;
+        this.bRentable = data.bRentable ?? null;
+        this.dcBoardRate = data.dcBoardRate ?? null;
+        this.dcPushRate = data.dcPushRate ?? null;
+        this.dcTax1Rate = data.dcTax1Rate ?? null;
+        this.dcTax2Rate = data.dcTax2Rate ?? null;
+        this.sUnitDesc = data.sUnitDesc ?? null;
+        this.dcStdWeeklyRate = data.dcStdWeeklyRate ?? null;
+        this.dcMapTop = data.dcMapTop ?? null;
+        this.dcMapLeft = data.dcMapLeft ?? null;
+        this.dcMapTheta = data.dcMapTheta ?? null;
+    }
+}

@@ -1,4 +1,4 @@
-import { StorageUnit } from "./storageunit";
+import { SiteLinkStorageUnit } from "./site-link-storage-unit";
 
 // isRentable=true|false& (_bRented vs -bRentable)
 // findBySize=10x10  (_dcWidth, _dcLength)
@@ -9,9 +9,9 @@ import { StorageUnit } from "./storageunit";
 // isClimateControlled=true|false (_bClimate)
 
 export class StorageUnits {
-  private storageUnits: StorageUnit[];
+  private storageUnits: SiteLinkStorageUnit[];
 
-  public constructor(storageUnits: StorageUnit[]) {
+  public constructor(storageUnits: SiteLinkStorageUnit[]) {
     this.storageUnits = storageUnits;
   }
 
