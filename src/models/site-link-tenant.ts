@@ -28,7 +28,7 @@ class SiteLinkTenant {
   public bHasInquiry: boolean | null;
   public bHasReservation: boolean | null;
 
-  constructor(data: any) {
+  public constructor(data: any) {
     this.SiteID = data.SiteID ?? null;
     this.TenantID = data.TenantID ?? null;
     this.sLocationCode = data.sLocationCode ?? null;
@@ -56,5 +56,37 @@ class SiteLinkTenant {
     this.dcCurrentBalance = data.dcCurrentBalance ?? null;
     this.bHasInquiry = data.bHasInquiry ?? null;
     this.bHasReservation = data.bHasReservation ?? null;
+  }
+
+  public toVapiTenant(): VapiTenant {
+    return new VapiTenant({
+      siteId: this.SiteID,
+      tenantId: this.TenantID,
+      locationCode: this.sLocationCode,
+      firstName: this.sFName,
+      middleInitial: this.sMI,
+      lastName: this.sLName,
+      company: this.sCompany,
+      address1: this.sAddr1,
+      address2: this.sAddr2,
+      city: this.sCity,
+      region: this.sRegion,
+      postalCode: this.sPostalCode,
+      phone: this.sPhone,
+      email: this.sEmail,
+      mobile: this.sMobile,
+      phoneBusiness: this.sPhoneBus,
+      fax: this.sFax,
+      license: this.sLicense,
+      accessCode: this.sAccessCode,
+      hasActiveLedger: this.bHasActiveLedger,
+      licenseRegion: this.sLicRegion,
+      inAuction: this.bInAuction,
+      pastDue: this.bPastDue,
+      daysPastDue: this.iDaysPastDue,
+      currentBalance: this.dcCurrentBalance,
+      hasInquiry: this.bHasInquiry,
+      hasReservation: this.bHasReservation
+    });
   }
 }
