@@ -1,4 +1,6 @@
 import { SiteLinkStorageUnit } from "./site-link-storage-unit"
+import { SiteLinkTenant } from "./site-link-tenant"
+
 import * as soap from 'soap';
 const SITELINK_CORP_CODE = process.env.SITELINK_CORP_CODE;
 const SITELINK_LOCATION_CODE = process.env.SITELINK_LOCATION_CODE;
@@ -55,33 +57,52 @@ class SiteLink {
         return storageUnits;
     }
 
-    public async getTenants(fName:string, lName:string): Promise<any> {
+    public async getTenants(params: any): Promise<SiteLinkTenant[]> {
 
         if(client === null){
             await this.init();
         }
 
-        let tentants: any[] = [];
+        let tenantInfos: SiteLinkTenant[] = [];
 
-        const args = {...commonApiParams,
-            sTenantFirstName: fName,
-            sTenantLastName: lName};
+        const args : any = {...commonApiParams};
+
+        if(params.firstName !== undefined)
+            args.sTenantFirstName = params.firstName;
+
+        if(params.lastName !== undefined)
+            args.sTenantLastName = params.lastName;
+         
 
         let soapResult: any = null;
         if (client !== null) {
             soapResult = await client.TenantListDetailed_v2Async(args);
         }
 
-        
+        const dataSet = soapResult[0].TenantListDetailed_v2Result.diffgram.NewDataSet;
+        const rtTable = dataSet.RT;
 
-        // soapResult[0].UnitsInformation_v2Result.diffgram.NewDataSet.Table.forEach((unit: any) => {
+        //check if success
+        if(rtTable.Ret_Code != 1){
+            throw rtTable.Ret_Msg;
+        }
 
-        //     const storageUnit: StorageUnit = new StorageUnit(unit);
-        //     storageUnits.push(storageUnit);
+        //check if dataSet.Table is defined and an array type
+        if(Array.isArray(dataSet.Table)){
 
-        // });
+            dataSet.Table.forEach((tenant: any) => {
 
-        return soapResult
+                const tenantInfo: SiteLinkTenant = new SiteLinkTenant(tenant);
+                tenantInfos.push(tenantInfo);
+   
+            });
+            
+
+        }else{
+            tenantInfos.push(new SiteLinkTenant(dataSet.Table));
+        }
+
+        return tenantInfos;
     }
 
     public async filterUnits(filterFunc : (x : SiteLinkStorageUnit) => boolean): Promise<SiteLinkStorageUnit[]> {

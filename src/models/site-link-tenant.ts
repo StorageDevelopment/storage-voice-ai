@@ -1,4 +1,5 @@
-class SiteLinkTenant {
+import { VapiTenant } from './vapi-tenant';
+export class SiteLinkTenant {
     
   public SiteID: number | null;
   public TenantID: number | null;

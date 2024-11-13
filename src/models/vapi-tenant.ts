@@ -1,4 +1,4 @@
-class VapiTenant {
+export class VapiTenant {
   public siteId: string | null;
   public tenantId: string | null;
   public locationCode: string | null;
