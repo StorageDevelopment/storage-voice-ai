@@ -2,22 +2,39 @@ import request from "supertest";
 import app from "../src/app";
 const assert = require("assert");
 
+const testPayload = {
+  message: {
+    toolCalls: [
+      {
+        id: 1,
+        function: {
+          name: "getAllUnits",
+        },
+      },
+    ],
+  },
+};
+
 describe("Example Test Suite", () => {
   it("should return true for 1 + 1 = 2", () => {
     assert.strictEqual(1 + 1, 2);
   });
 
   it("should return 200 OK", (done) => {
-    request(app).post("/api/tools").expect(200, done);
+    request(app).post("/api/tools").send(testPayload).expect(200, done);
   });
 
-  xit("should filter isRentable", (done) => {
-    request(app).get("/api/tools?isRentable=true").expect(200, done);
+  it("should filter isRentable", (done) => {
+    request(app)
+      .post("/api/tools?isRentable=true")
+      .send(testPayload)
+      .expect(200, done);
   });
 
   xit("should filter findBySize", (done) => {
     request(app)
-      .get("/api/example?findBySize=15x10")
+      .post("/api/tools?findBySize=15x10")
+      .send(testPayload)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -29,7 +46,8 @@ describe("Example Test Suite", () => {
 
   xit("should filter findByPrice", (done) => {
     request(app)
-      .get("/api/example?findByPrice=[10,1000]")
+      .post("/api/tools?findByPrice=[10,1000]")
+      .send(testPayload)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
@@ -39,9 +57,10 @@ describe("Example Test Suite", () => {
       });
   });
 
-  xit("should filter by multiple rules", (done) => {
+  it("should filter by multiple rules", (done) => {
     request(app)
-      .get("/api/example?isRentable=true&findBySize=15x10")
+      .post("/api/tools?isRentable=true&findBySize=15x10")
+      .send(testPayload)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);

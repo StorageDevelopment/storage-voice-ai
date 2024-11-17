@@ -11,32 +11,34 @@ export const toolsController = asyncHandler(
     const body = req.body;
     const query = req.query;
     const toolCalls = body.message.toolCalls;
-
     const responseObject: any = { results: [] };
 
     for (const toolCall of toolCalls) {
-      const resultObject: any = {};
+      try {
+        const resultObject: any = {};
 
-      resultObject.toolCallId = toolCall.id;
+        resultObject.toolCallId = toolCall.id;
 
-      //determine which tool is being called
-      const functionName = toolCall.function.name;
+        //determine which tool is being called
+        const functionName = toolCall.function.name;
 
-      if (functionName === "getAllUnits") {
-        const allUnits = await siteLink.getAllUnits();
-        resultObject.result = allUnits;
+        if (functionName === "getAllUnits") {
+          const allUnits = await siteLink.getAllUnits();
+          resultObject.result = allUnits;
+        }
+
+        if (functionName === "getSomeUnits") {
+          let units = await siteLink.getAllUnits();
+          const storageUnits = new StorageUnits(units);
+          units = storageUnits.filter(query);
+          resultObject.result = units;
+        }
+
+        responseObject.results.push(resultObject);
+      } catch (err) {
+        res.status(500).json({ message: err });
       }
-
-      if (functionName === "getSomeUnits") {
-        let units = await siteLink.getAllUnits();
-        const storageUnits = new StorageUnits(units);
-        units = storageUnits.filter(query);
-        resultObject.result = units;
-      }
-
-      responseObject.results.push(resultObject);
     }
-
     res.send(responseObject);
   }
 );

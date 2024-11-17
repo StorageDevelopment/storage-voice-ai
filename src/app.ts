@@ -1,11 +1,12 @@
 import express from "express";
 import toolsRoute from "./routes/toolsRoute";
+import { toolsController } from "./controllers/toolsController";
 import { Request, Response, NextFunction } from "express";
 
 const app = express();
 
 app.use(express.json());
-app.use("/api/tools", toolsRoute);
+app.post("/api/tools", toolsController);
 
 //unknown route
 app.use((req: Request, res: Response, next: NextFunction) => {
