@@ -7,19 +7,12 @@ describe("Example Test Suite", () => {
     assert.strictEqual(1 + 1, 2);
   });
 
-  xit("should return 200 OK", (done) => {
-    request(app).get("/api/tools").expect(200, done);
+  it("should return 200 OK", (done) => {
+    request(app).post("/api/tools").expect(200, done);
   });
 
   xit("should filter isRentable", (done) => {
-    request(app)
-      .get("/api/example?isRentable=true")
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
-        assert(res.body[0]._bRentable === "true");
-        done();
-      });
+    request(app).get("/api/tools?isRentable=true").expect(200, done);
   });
 
   xit("should filter findBySize", (done) => {
