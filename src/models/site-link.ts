@@ -57,6 +57,48 @@ class SiteLink {
         return storageUnits;
     }
 
+    public async getTenant(siteLinkTenant: SiteLinkTenant): Promise<SiteLinkTenant | null> {
+
+        if(client === null){
+            await this.init();
+        }
+
+        //add the common api params
+        Object.assign(siteLinkTenant, commonApiParams);
+                
+
+        let soapResult: any = null;
+        if (client !== null) {
+            soapResult = await client.TenantListDetailed_v2Async(siteLinkTenant);
+        }
+
+        const dataSet = soapResult[0].TenantListDetailed_v2Result.diffgram.NewDataSet;
+        const rtTable = dataSet.RT;
+
+        //check if success
+        if(rtTable.Ret_Code != 1){
+            throw rtTable.Ret_Msg;
+        }
+
+        let foundSiteLinkTenant: SiteLinkTenant | null = null;
+
+        //check if dataSet.Table is defined and an array type
+        if(Array.isArray(dataSet.Table)){
+
+            //if the length is not 0, return the first tenant
+            if(dataSet.Table.length !== 0){
+               
+                foundSiteLinkTenant = new SiteLinkTenant(dataSet.Table[0]);
+            }
+
+        }else{
+            
+            foundSiteLinkTenant = new SiteLinkTenant(dataSet.Table);
+        }
+
+        return foundSiteLinkTenant;
+    }
+
     public async getTenants(params: any): Promise<SiteLinkTenant[]> {
 
         if(client === null){

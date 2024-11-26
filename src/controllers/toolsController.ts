@@ -4,6 +4,9 @@ import siteLink from "../models/site-link";
 import asyncHandler from "express-async-handler";
 import { SiteLinkStorageUnit } from "../models/site-link-storage-unit";
 import { SiteLinkTenant } from "../models/site-link-tenant";
+import siteLinkForVapi from "../models/site-link-for-vapi";
+import { VapiTenant } from "../models/vapi-tenant";
+
 
 export const toolsController = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
@@ -32,29 +35,21 @@ export const toolsController = asyncHandler(async (req: Request, res: Response) 
         unitId: "678"
       };
 
-    } else if (functionName === "getCustomerRecord") {
+    } else if (functionName === "getTenant") {
 
       const args = toolCall.function.arguments;
 
-      const tenants: SiteLinkTenant[] = await siteLink.getTenants(args);
+      //createa a vapi tenant
+      const vapiTenant: VapiTenant = new VapiTenant(args);
 
-      if(tenants.length == 0){
+      const tenant: VapiTenant = await siteLinkForVapi.getTenant(vapiTenant);
 
-        //we need to create a new lead
-
-        
-      }else if(tenants.length > 1){
-        resultObject.result = {
-          success: false,
-          records: []
-        }
-      }else{
-        resultObject.result = {
-          success: true,
-          records: tenants
-        }
+      resultObject.result = {
+        success: true,
+        tenant: vapiTenant
       }
-      
+
+
 
       // let recordSuccess = true;
 
