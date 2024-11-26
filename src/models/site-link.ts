@@ -1,5 +1,6 @@
 import { SiteLinkStorageUnit } from "./site-link-storage-unit"
 import { SiteLinkTenant } from "./site-link-tenant"
+import {TenantListDetailedV2Params} from "./tenant-list-detailed-v2-params"
 
 import * as soap from 'soap';
 const SITELINK_CORP_CODE = process.env.SITELINK_CORP_CODE;
@@ -63,13 +64,17 @@ class SiteLink {
             await this.init();
         }
 
-        //add the common api params
-        Object.assign(siteLinkTenant, commonApiParams);
+        const functionArgs : TenantListDetailedV2Params = new TenantListDetailedV2Params(commonApiParams);
+
+        //now assign the first name, last name, and phone number
+        functionArgs.sTenantFirstName = siteLinkTenant.sFName ?? "";
+        functionArgs.sTenantLastName = siteLinkTenant.sLName ?? "";
+        functionArgs.sPhoneNumber = siteLinkTenant.sPhone ?? ""
                 
 
         let soapResult: any = null;
         if (client !== null) {
-            soapResult = await client.TenantListDetailed_v2Async(siteLinkTenant);
+            soapResult = await client.TenantListDetailed_v2Async(functionArgs);
         }
 
         const dataSet = soapResult[0].TenantListDetailed_v2Result.diffgram.NewDataSet;
@@ -92,7 +97,7 @@ class SiteLink {
             }
 
         }else{
-            
+
             foundSiteLinkTenant = new SiteLinkTenant(dataSet.Table);
         }
 
