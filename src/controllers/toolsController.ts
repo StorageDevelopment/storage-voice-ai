@@ -7,6 +7,45 @@ import { SiteLinkTenant } from "../models/site-link-tenant";
 import siteLinkForVapi from "../models/site-link-for-vapi";
 import { VapiTenant } from "../models/vapi-tenant";
 
+const funcMap: any = {
+
+  createAccount : async (args: any): Promise<any> => {
+
+    //createa a vapi tenant
+    const vapiTenant: VapiTenant = new VapiTenant(args);
+
+    //const tenant: VapiTenant | null = await siteLinkForVapi.getTenant(vapiTenant);
+
+    //const found = tenant !== null;
+
+    const result = {
+      success: true,
+      tenant: {
+        tenantId: "1234",
+        phone: args.phone
+      }
+    }
+
+    return result;
+  },
+
+  getAccount : async (args: any): Promise<any> => {
+
+    //createa a vapi tenant
+    const vapiTenant: VapiTenant = new VapiTenant(args);
+
+    const tenant: VapiTenant | null = await siteLinkForVapi.getTenant(vapiTenant);
+
+    const found = tenant !== null;
+
+    const result = {
+      success: found,
+      tenant: tenant
+    };
+
+    return result;
+  }
+}
 
 export const toolsController = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
@@ -20,95 +59,19 @@ export const toolsController = asyncHandler(async (req: Request, res: Response) 
     const resultObject: any = {};
 
     resultObject.toolCallId = toolCall.id;
+    const args = toolCall.function.arguments;
+
+    //cleanup the phone number
+    if (args.phone)
+      args.phone = args.phone.toString();
 
     //determine which tool is being called
-    const functionName = toolCall.function.name;
+    const functionName: string = toolCall.function.name;
 
-    if (functionName === "makeReservation") {
-
-      const tenantId = toolCall.function.arguments["tenantId"];
-      const length = toolCall.function.arguments["length"];
-      const width = toolCall.function.arguments["width"];
-
-      resultObject.result = {
-        success: true,
-        unitId: "678"
-      };
-
-    } else if (functionName === "createAccount") {
-
-      const args = toolCall.function.arguments;
-
-      //convert the phone number to a string
-      if (args.phone)
-        args.phone = args.phone.toString();
-
-      //createa a vapi tenant
-      const vapiTenant: VapiTenant = new VapiTenant(args);
-
-      //const tenant: VapiTenant | null = await siteLinkForVapi.getTenant(vapiTenant);
-
-      //const found = tenant !== null;
-
-      resultObject.result = {
-        success: true,
-        tenant: {
-          tenantId: "1234",
-          phone: args.phone
-        }
-      }
-    } else if (functionName === "getAccount") {
-
-      const args = toolCall.function.arguments;
-
-      //convert the phone number to a string
-      if (args.phone)
-        args.phone = args.phone.toString();
-
-      //createa a vapi tenant
-      const vapiTenant: VapiTenant = new VapiTenant(args);
-
-      const tenant: VapiTenant | null = await siteLinkForVapi.getTenant(vapiTenant);
-
-      const found = tenant !== null;
-
-      resultObject.result = {
-        success: found,
-        tenant: tenant
-      }
-
-
-
-      // let recordSuccess = true;
-
-      // if (lName === "Doe")
-      //   recordSuccess = false;
-
-      // resultObject.result = {
-      //   success: recordSuccess,
-      //   records: [{
-
-      //     tenantId: "HI34",
-      //     phoneNumber: 21234
-      //   }]
-      //};
-
-    }
-    else if (functionName === "getAllUnits") {
-
-      const allUnits = await siteLink.getAllUnits();
-      resultObject.result = allUnits;
-    } else if (functionName === "authenticateUser") {
-
-      resultObject.result = await siteLink.getTenants(toolCall.function.arguments);
-
-    }
-    else if (functionName === "filterUnitsBySize") {
-
-      const filterFunction = (unit: SiteLinkStorageUnit) => unit.dcLength == toolCall.function.arguments["length"]
-        && unit.dcWidth == toolCall.function.arguments["width"];
-
-      resultObject.result = await siteLink.filterUnits(filterFunction);
+    //perform a lookup in funcMap if the function name exists.  if so, call the function. 
+    if (funcMap[functionName]) {
+      resultObject.result = await funcMap[functionName](args);
+    } else {
 
     }
 
