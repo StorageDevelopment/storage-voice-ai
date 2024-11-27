@@ -39,6 +39,9 @@ export const toolsController = asyncHandler(async (req: Request, res: Response) 
 
       const args = toolCall.function.arguments;
 
+      //convert the phone number to a string
+      args.phone = args.phone.toString();
+
       //createa a vapi tenant
       const vapiTenant: VapiTenant = new VapiTenant(args);
 
