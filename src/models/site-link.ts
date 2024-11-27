@@ -69,7 +69,8 @@ class SiteLink {
         //now assign the first name, last name, and phone number
         functionArgs.sTenantFirstName = siteLinkTenant.sFName ?? "";
         functionArgs.sTenantLastName = siteLinkTenant.sLName ?? "";
-        functionArgs.sPhoneNumber = siteLinkTenant.sPhone ?? ""
+        functionArgs.sPhoneNumber = siteLinkTenant.sPhone ?? "";
+        
                 
 
         let soapResult: any = null;

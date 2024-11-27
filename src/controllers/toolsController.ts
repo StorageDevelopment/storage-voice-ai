@@ -35,18 +35,20 @@ export const toolsController = asyncHandler(async (req: Request, res: Response) 
         unitId: "678"
       };
 
-    } else if (functionName === "getTenant") {
+    } else if (functionName === "getTenantId") {
 
       const args = toolCall.function.arguments;
 
       //createa a vapi tenant
       const vapiTenant: VapiTenant = new VapiTenant(args);
 
-      const tenant: VapiTenant = await siteLinkForVapi.getTenant(vapiTenant);
+      const tenant: VapiTenant | null = await siteLinkForVapi.getTenant(vapiTenant);
+
+      const found = tenant !== null;
 
       resultObject.result = {
-        success: true,
-        tenant: vapiTenant
+        success: found,
+        tenant: tenant
       }
 
 

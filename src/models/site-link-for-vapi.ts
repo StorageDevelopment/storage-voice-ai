@@ -11,7 +11,7 @@ class SiteLinkForVapi {
 
     }
 
-    public async getTenant(vapiTenant: VapiTenant): Promise<VapiTenant> {
+    public async getTenant(vapiTenant: VapiTenant): Promise<VapiTenant | null> {
 
         //convert to site link tenant
         let siteLinkTenant: SiteLinkTenant = TenantConverter.toSiteLinkTenant(vapiTenant);
@@ -19,7 +19,7 @@ class SiteLinkForVapi {
         //get the tenant fro site link
         const foundSiteLinkTenant: SiteLinkTenant | null = await sitelink.getTenant(siteLinkTenant);
 
-        let foundVapiTenant: VapiTenant = new VapiTenant({});
+        let foundVapiTenant: VapiTenant | null = null;
 
         if (foundSiteLinkTenant !== null)
             foundVapiTenant = TenantConverter.toVapiTenant(foundSiteLinkTenant);

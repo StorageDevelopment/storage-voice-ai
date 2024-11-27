@@ -55,5 +55,8 @@ export class VapiTenant {
     this.currentBalance = data.currentBalance ?? null;
     this.hasInquiry = data.hasInquiry ?? null;
     this.hasReservation = data.hasReservation ?? null;
+
+    if(this.phone !== null)
+      this.phone = this.phone.replace(/\s+/g, '');
   }
 }
