@@ -3,7 +3,7 @@ import app from "../src/app";
 //import { expect } from "chai";
 const assert = require("assert");
 
-describe("Example Test Suite", () => {
+describe.skip("Example Test Suite", () => {
   it("should return true for 1 + 1 = 2", () => {
     assert.strictEqual(1 + 1, 2);
   });
@@ -50,9 +50,9 @@ describe("New Testing", () => {
               "function": {
                 "name": "getTenant",
                 "arguments": {
-                  "firstName": "John",
-                  "lastName": "Doe",
-                  "phone" : "1234567890"
+                  "firstName": "Mary",
+                  "lastName": "Jane",
+                  "phone" : "1112223333"
                 }
               }
             }

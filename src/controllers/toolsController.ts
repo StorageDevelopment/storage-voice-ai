@@ -35,12 +35,35 @@ export const toolsController = asyncHandler(async (req: Request, res: Response) 
         unitId: "678"
       };
 
-    } else if (functionName === "getTenantId") {
+    } else if (functionName === "createAccount") {
 
       const args = toolCall.function.arguments;
 
       //convert the phone number to a string
-      args.phone = args.phone.toString();
+      if (args.phone)
+        args.phone = args.phone.toString();
+
+      //createa a vapi tenant
+      const vapiTenant: VapiTenant = new VapiTenant(args);
+
+      //const tenant: VapiTenant | null = await siteLinkForVapi.getTenant(vapiTenant);
+
+      //const found = tenant !== null;
+
+      resultObject.result = {
+        success: true,
+        tenant: {
+          tenantId: "1234",
+          phone: args.phone
+        }
+      }
+    } else if (functionName === "getAccount") {
+
+      const args = toolCall.function.arguments;
+
+      //convert the phone number to a string
+      if (args.phone)
+        args.phone = args.phone.toString();
 
       //createa a vapi tenant
       const vapiTenant: VapiTenant = new VapiTenant(args);
