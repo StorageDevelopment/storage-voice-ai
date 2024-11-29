@@ -1,6 +1,7 @@
 import { SiteLinkStorageUnit } from "./site-link-storage-unit"
 import { SiteLinkTenant } from "./site-link-tenant"
 import {TenantListDetailedV2Params} from "./tenant-list-detailed-v2-params"
+import { TenantNewDetailedV2Params } from "./tenant-new-detailed-v2-params";
 
 import * as soap from 'soap';
 const SITELINK_CORP_CODE = process.env.SITELINK_CORP_CODE;
@@ -30,6 +31,49 @@ class SiteLink {
 
         client = await soap.createClientAsync(url);
 
+    }
+
+    public async createTenant(siteLinkTenant: SiteLinkTenant): Promise<SiteLinkTenant | null> {
+
+        if(client === null){
+            await this.init();
+        }
+
+        const functionArgs : TenantNewDetailedV2Params = new TenantNewDetailedV2Params(siteLinkTenant);
+
+        //add the common api params
+        Object.assign(functionArgs, commonApiParams);
+
+        let soapResult: any = null;
+        if (client !== null) {
+            soapResult = await client.TenantNewDetailed_v2Async(functionArgs);
+        }
+
+        const dataSet = soapResult[0].TenantNewDetailed_v2Result.diffgram.NewDataSet;
+        const rtTable = dataSet.RT;
+
+        //check if success
+        if(rtTable.Ret_Code != 1){
+            throw rtTable.Ret_Msg;
+        }
+
+        let createdSiteLinkTenant: SiteLinkTenant | null = null;
+
+        //check if dataSet.Table is defined and an array type
+        if(Array.isArray(dataSet.Tenants)){
+
+            //if the length is not 0, return the first tenant
+            if(dataSet.Tenants.length !== 0){
+               
+                createdSiteLinkTenant = new SiteLinkTenant(dataSet.Tenants[0]);
+            }
+
+        }else{
+
+            createdSiteLinkTenant = new SiteLinkTenant(dataSet.Tenants);
+        }
+
+        return createdSiteLinkTenant;
     }
 
     public async getAllUnits(): Promise<SiteLinkStorageUnit[]> {

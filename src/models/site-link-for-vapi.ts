@@ -26,6 +26,22 @@ class SiteLinkForVapi {
         
         return foundVapiTenant;
     }
+
+    public async createTenant(vapiTenant: VapiTenant): Promise<VapiTenant | null> {
+
+        //convert to site link tenant
+        let siteLinkTenant: SiteLinkTenant = TenantConverter.toSiteLinkTenant(vapiTenant);
+
+        //get the tenant fro site link
+        const createdSiteLinkTenant: SiteLinkTenant | null = await sitelink.createTenant(siteLinkTenant);
+
+        let createdVapiTenant: VapiTenant | null = null;
+
+        if (createdSiteLinkTenant !== null)
+            createdVapiTenant = TenantConverter.toVapiTenant(createdSiteLinkTenant);
+        
+        return createdVapiTenant;
+    }
 }
 
 const siteLinkForVapi = new SiteLinkForVapi();

@@ -14,16 +14,13 @@ const funcMap: any = {
     //createa a vapi tenant
     const vapiTenant: VapiTenant = new VapiTenant(args);
 
-    //const tenant: VapiTenant | null = await siteLinkForVapi.getTenant(vapiTenant);
+    const tenant: VapiTenant | null = await siteLinkForVapi.createTenant(vapiTenant);
 
-    //const found = tenant !== null;
+    const createdSuccess = tenant !== null;
 
     const result = {
-      success: true,
-      tenant: {
-        tenantId: "1234",
-        phone: args.phone
-      }
+      success: createdSuccess,
+      tenant: tenant
     }
 
     return result;
