@@ -6,8 +6,21 @@ import { SiteLinkStorageUnit } from "../models/site-link-storage-unit";
 import { SiteLinkTenant } from "../models/site-link-tenant";
 import siteLinkForVapi from "../models/site-link-for-vapi";
 import { VapiTenant } from "../models/vapi-tenant";
+import { VapiStorageUnit } from "../models/vapi-storage-unit";
 
 const funcMap: any = {
+
+  getUnits : async (args: any): Promise<any> => {
+
+    const units: VapiStorageUnit[] = await siteLinkForVapi.getUnits();
+
+    const result = {
+      success: true,
+      storageUnits: units
+    }
+
+    return result;
+  },
 
   createAccount : async (args: any): Promise<any> => {
 

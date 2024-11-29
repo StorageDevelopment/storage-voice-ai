@@ -76,7 +76,7 @@ class SiteLink {
         return createdSiteLinkTenant;
     }
 
-    public async getAllUnits(): Promise<SiteLinkStorageUnit[]> {
+    public async getUnits(): Promise<SiteLinkStorageUnit[]> {
 
         if(client === null){
             await this.init();
@@ -197,18 +197,18 @@ class SiteLink {
         return tenantInfos;
     }
 
-    public async filterUnits(filterFunc : (x : SiteLinkStorageUnit) => boolean): Promise<SiteLinkStorageUnit[]> {
+    // public async filterUnits(filterFunc : (x : SiteLinkStorageUnit) => boolean): Promise<SiteLinkStorageUnit[]> {
 
-        if(client === null){
-            await this.init();
-        }
+    //     if(client === null){
+    //         await this.init();
+    //     }
 
-        const storageUnits: SiteLinkStorageUnit[] = await this.getAllUnits();
+    //     const storageUnits: SiteLinkStorageUnit[] = await this.getAllUnits();
 
-        const filteredUnits: SiteLinkStorageUnit[] = storageUnits.filter(filterFunc);
+    //     const filteredUnits: SiteLinkStorageUnit[] = storageUnits.filter(filterFunc);
 
-        return filteredUnits;
-    }
+    //     return filteredUnits;
+    // }
 }
 
 const siteLink = new SiteLink();

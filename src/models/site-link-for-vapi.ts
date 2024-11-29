@@ -3,12 +3,27 @@ import { VapiTenant } from './vapi-tenant';
 import { TenantConverter } from './tenant-converter';
 import { SiteLinkTenant } from './site-link-tenant';
 import sitelink from './site-link'
+import { SiteLinkStorageUnit } from './site-link-storage-unit';
+import { StorageUnitConverter } from './storage-unit-converter';
+import { VapiStorageUnit } from './vapi-storage-unit';
 
 class SiteLinkForVapi {
 
 
     public constructor() {
 
+    }
+
+    public async getUnits(): Promise<VapiStorageUnit[]> {
+
+        //get the tenant fro site link
+        const units: SiteLinkStorageUnit[] = await sitelink.getUnits();
+
+        const vapiUnits: VapiStorageUnit[] = units.map((unit: SiteLinkStorageUnit) => {
+            return StorageUnitConverter.toVapiStorageUnit(unit);
+        });
+
+        return vapiUnits;
     }
 
     public async getTenant(vapiTenant: VapiTenant): Promise<VapiTenant | null> {
