@@ -69,6 +69,8 @@ export const toolsController = asyncHandler(async (req: Request, res: Response) 
     if (funcMap[functionName]) {
       resultObject.result = await funcMap[functionName](args);
     } else {
+      
+      throw "Function not found: " + functionName;
 
     }
 
