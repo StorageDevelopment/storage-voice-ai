@@ -14,7 +14,7 @@ app.use((req : Request, res : Response, next : NextFunction) => {
 
 //default error handler
 app.use((err : any, req : Request, res : Response, next : NextFunction) => {
-    res.status(500).send(JSON.stringify(err));
+    res.status(500).json({message: err});
 });
 
 export default app;
