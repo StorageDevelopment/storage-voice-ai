@@ -14,6 +14,35 @@ class SiteLinkForVapi {
 
     }
 
+    public async getAvailableUnit(args: any): Promise<VapiStorageUnit | null> {
+
+        //get the tenant fro site link
+        const units: SiteLinkStorageUnit[] = await sitelink.getUnits();
+
+        const filteredUnits: SiteLinkStorageUnit[] = units.filter((unit: SiteLinkStorageUnit) => {
+
+            let goodWidth = false;
+            if(unit.dcWidth != null)
+                goodWidth = parseFloat(unit.dcWidth) == args.width;
+
+            let goodLength = false;
+            if(unit.dcLength != null)
+                goodLength = parseFloat(unit.dcLength) == args.length;
+
+            return goodWidth && goodLength;
+        });
+
+        const vapiUnits: VapiStorageUnit[] = filteredUnits.map((unit: SiteLinkStorageUnit) => {
+            return StorageUnitConverter.toVapiStorageUnit(unit);
+        });
+
+        if(vapiUnits.length > 0)
+            return vapiUnits[0];
+        else
+            return null;
+        
+    }
+
     public async getUnits(): Promise<VapiStorageUnit[]> {
 
         //get the tenant fro site link

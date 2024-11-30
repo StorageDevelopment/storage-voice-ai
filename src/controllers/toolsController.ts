@@ -10,6 +10,20 @@ import { VapiStorageUnit } from "../models/vapi-storage-unit";
 
 const funcMap: any = {
 
+  getAvailableUnit : async (args: any): Promise<any> => {
+
+    const availableUnit: VapiStorageUnit | null = await siteLinkForVapi.getAvailableUnit(args);
+
+    const success = availableUnit !== null; 
+
+    const result = {
+      success: success,
+      availableStorageUnit: availableUnit
+    }
+
+    return result;
+  },
+
   getUnits : async (args: any): Promise<any> => {
 
     const units: VapiStorageUnit[] = await siteLinkForVapi.getUnits();

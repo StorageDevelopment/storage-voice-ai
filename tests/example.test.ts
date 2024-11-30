@@ -126,6 +126,45 @@ describe("Primary Unit Tests", () => {
       })
   });
 
+  it("should return 200 for findAvailableUnit", (done) => {
+
+    //get the number of ticks since the Unix Epoch (January 1, 1970 00:00:00 GMT)
+    let ticks = new Date().getTime();
+
+    //create a test last name
+    const lastName = "UnitTest" + ticks;
+    const firstName = "Mocha";
+    const phone = "1234567890";
+
+    request(app)
+      .post("/api/tools")
+      .send({
+        "message": {
+          "timestamp": 0,
+          "type": "tool-calls",
+          "toolCalls": [
+            {
+              "id": "call_3JewUpif1jmC6YWLITvVEn7U",
+              "type": "function",
+              "function": {
+                "name": "getAvailableUnit",
+                "arguments": {
+                  "width": 10,
+                  "length": 20
+                }
+              }
+            }
+          ]
+        }
+      })
+      .expect(200)
+      .end((err, response : any) => {
+        currentResponse = response; // update it here
+        if (err) return done(err);
+        return done();
+      })
+  });
+
 });
 
 describe("Development Unit Testing", () => {
