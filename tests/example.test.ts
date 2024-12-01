@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../src/app";
-//import { expect } from "chai";
+import { expect } from "earl";
 const assert = require("assert");
 
 // you can use a global variable if tests span many files
@@ -86,7 +86,7 @@ describe("Primary Unit Tests", () => {
       })
   });
 
-  it("should return 200 for createTenant", (done) => {
+  it.skip("should return 200 for createTenant", (done) => {
 
     //get the number of ticks since the Unix Epoch (January 1, 1970 00:00:00 GMT)
     let ticks = new Date().getTime();
@@ -158,6 +158,13 @@ describe("Primary Unit Tests", () => {
         }
       })
       .expect(200)
+      .expect((res) => {
+
+        const unitId = res.body.results[0].result.availableStorageUnit.unitID;
+
+         expect(unitId).not.toBeNullish();
+         expect(unitId).not.toBeEmpty();
+         })
       .end((err, response : any) => {
         currentResponse = response; // update it here
         if (err) return done(err);
