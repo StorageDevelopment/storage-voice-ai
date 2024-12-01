@@ -172,6 +172,45 @@ describe("Primary Unit Tests", () => {
       })
   });
 
+  it("should return 200 for makeReservation", (done) => {
+
+    
+    request(app)
+      .post("/api/tools")
+      .send({
+        "message": {
+          "timestamp": 0,
+          "type": "tool-calls",
+          "toolCalls": [
+            {
+              "id": "call_3JewUpif1jmC6YWLITvVEn7U",
+              "type": "function",
+              "function": {
+                "name": "makeReservation",
+                "arguments": {
+                  "tenantID": "401557",
+                  "unitID": "92110"
+                }
+              }
+            }
+          ]
+        }
+      })
+      .expect(200)
+      .expect((res) => {
+
+        const unitId = res.body.results[0].result.reservation.unitID;
+
+         expect(unitId).not.toBeNullish();
+         expect(unitId).not.toBeEmpty();
+         })
+      .end((err, response : any) => {
+        currentResponse = response; // update it here
+        if (err) return done(err);
+        return done();
+      })
+  });
+
 });
 
 describe("Development Unit Testing", () => {

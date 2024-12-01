@@ -51,7 +51,7 @@ class SiteLink {
             soapResult = await client.ReservationNewWithSource_v5Async(functionArgs);
         }
 
-        const dataSet = soapResult[0].TenantNewDetailed_v2Result.diffgram.NewDataSet;
+        const dataSet = soapResult[0].ReservationNewWithSource_v5Result.diffgram.NewDataSet;
         const rtTable = dataSet.RT;
 
         //check if success

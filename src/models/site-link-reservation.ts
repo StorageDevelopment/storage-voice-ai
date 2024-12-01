@@ -13,7 +13,7 @@ export class SiteLinkReservation {
     this.sUnitID = data.sUnitID ?? null;
     this.dNeeded = data.dNeeded ?? getDateDaysFromNow(3).toISOString();
     this.dcQuotedRate = parseFloat(data.dcQuotedRate);
-    this.dExpires = data.dExpires ?? null;
-    this.dFollowUp = data.dFollowUp ?? null;
+    this.dExpires = data.dExpires ?? getDateDaysFromNow(2).toISOString();
+    this.dFollowUp = data.dFollowUp ?? getDateDaysFromNow(1).toISOString();
   }
 }

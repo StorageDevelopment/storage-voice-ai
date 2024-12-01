@@ -19,7 +19,7 @@ const funcMap: any = {
     if(vapiReservation.needed)
       vapiReservation.needed = new Date(vapiReservation.needed).toISOString();
 
-    const reservation: VapiReservation | null = await siteLinkForVapi.makeReservation(args);
+    const reservation: VapiReservation | null = await siteLinkForVapi.makeReservation(vapiReservation);
 
     const success = reservation !== null; 
 
