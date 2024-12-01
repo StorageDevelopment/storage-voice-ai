@@ -126,7 +126,7 @@ describe("Primary Unit Tests", () => {
       })
   });
 
-  it("should return 200 for findAvailableUnit", (done) => {
+  it("should return 200 for getAvailableUnit", (done) => {
 
     //get the number of ticks since the Unix Epoch (January 1, 1970 00:00:00 GMT)
     let ticks = new Date().getTime();

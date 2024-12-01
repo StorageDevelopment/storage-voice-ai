@@ -6,12 +6,30 @@ import sitelink from './site-link'
 import { SiteLinkStorageUnit } from './site-link-storage-unit';
 import { StorageUnitConverter } from './storage-unit-converter';
 import { VapiStorageUnit } from './vapi-storage-unit';
+import { VapiReservation } from './vapi-reservation';
+import { SiteLinkReservation } from './site-link-reservation';
+import { ReservationConverter } from './reservation-converter';
 
 class SiteLinkForVapi {
 
 
     public constructor() {
 
+    }
+
+    public async makeReservation(args: VapiReservation): Promise<VapiReservation | null> {
+
+        const siteLinkReservation: SiteLinkReservation = ReservationConverter.toSiteLinkReservation(args);
+
+        const createdSiteLinkReservation: SiteLinkReservation | null = await sitelink.makeReservation(siteLinkReservation);
+
+        let vapiReservation: VapiReservation | null = null;
+        if(createdSiteLinkReservation !== null)
+            vapiReservation = ReservationConverter.toVapiReservation(createdSiteLinkReservation);
+
+        
+        return vapiReservation;
+        
     }
 
     public async getAvailableUnit(args: any): Promise<VapiStorageUnit | null> {

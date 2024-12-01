@@ -7,8 +7,29 @@ import { SiteLinkTenant } from "../models/site-link-tenant";
 import siteLinkForVapi from "../models/site-link-for-vapi";
 import { VapiTenant } from "../models/vapi-tenant";
 import { VapiStorageUnit } from "../models/vapi-storage-unit";
+import { VapiReservation } from "../models/vapi-reservation";
 
 const funcMap: any = {
+
+  makeReservation : async (args: any): Promise<any> => {
+
+    const vapiReservation: VapiReservation = new VapiReservation(args);
+
+    //convert the needed date into iso string
+    if(vapiReservation.needed)
+      vapiReservation.needed = new Date(vapiReservation.needed).toISOString();
+
+    const reservation: VapiReservation | null = await siteLinkForVapi.makeReservation(args);
+
+    const success = reservation !== null; 
+
+    const result = {
+      success: success,
+      reservation: reservation
+    }
+
+    return result;
+  },
 
   getAvailableUnit : async (args: any): Promise<any> => {
 

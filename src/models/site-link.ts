@@ -2,6 +2,8 @@ import { SiteLinkStorageUnit } from "./site-link-storage-unit"
 import { SiteLinkTenant } from "./site-link-tenant"
 import {TenantListDetailedV2Params} from "./tenant-list-detailed-v2-params"
 import { TenantNewDetailedV2Params } from "./tenant-new-detailed-v2-params";
+import { ReservationNewWithSourceV5Params } from "./reservation-new-with-source-v5-params";
+import { SiteLinkReservation } from "./site-link-reservation";
 
 import * as soap from 'soap';
 const SITELINK_CORP_CODE = process.env.SITELINK_CORP_CODE;
@@ -31,6 +33,33 @@ class SiteLink {
 
         client = await soap.createClientAsync(url);
 
+    }
+
+    public async makeReservation(siteLinkReservation: SiteLinkReservation): Promise<SiteLinkReservation | null> {
+
+        if(client === null){
+            await this.init();
+        }
+
+        const functionArgs : ReservationNewWithSourceV5Params = new ReservationNewWithSourceV5Params(siteLinkReservation);
+
+        //add the common api params
+        Object.assign(functionArgs, commonApiParams);
+
+        let soapResult: any = null;
+        if (client !== null) {
+            soapResult = await client.ReservationNewWithSource_v5Async(functionArgs);
+        }
+
+        const dataSet = soapResult[0].TenantNewDetailed_v2Result.diffgram.NewDataSet;
+        const rtTable = dataSet.RT;
+
+        //check if success
+        if(rtTable.Ret_Code < 0){
+            throw rtTable.Ret_Msg;
+        }
+
+        return siteLinkReservation;
     }
 
     public async createTenant(siteLinkTenant: SiteLinkTenant): Promise<SiteLinkTenant | null> {

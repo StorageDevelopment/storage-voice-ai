@@ -4,11 +4,11 @@ import { VapiStorageUnit } from './vapi-storage-unit';
 export class StorageUnitConverter {
   static toVapiStorageUnit(siteLinkStorageUnit: SiteLinkStorageUnit): VapiStorageUnit {
     return new VapiStorageUnit({
-      retCode: siteLinkStorageUnit.retCode,
-      unitTypeID: siteLinkStorageUnit.unitTypeID,
+      retCode: siteLinkStorageUnit.Ret_Code,
+      unitTypeID: siteLinkStorageUnit.UnitTypeID,
       typeName: siteLinkStorageUnit.sTypeName,
       defLeaseNum: siteLinkStorageUnit.iDefLeaseNum,
-      unitId: siteLinkStorageUnit.unitID,
+      unitID: siteLinkStorageUnit.UnitID,
       unitName: siteLinkStorageUnit.sUnitName,
       width: siteLinkStorageUnit.dcWidth,
       length: siteLinkStorageUnit.dcLength,
@@ -23,6 +23,7 @@ export class StorageUnitConverter {
       corporate: siteLinkStorageUnit.bCorporate,
       rentable: siteLinkStorageUnit.bRentable,
       boardRate: siteLinkStorageUnit.dcBoardRate,
+      unitNote: siteLinkStorageUnit.sUnitNote,
       pushRate: siteLinkStorageUnit.dcPushRate,
       tax1Rate: siteLinkStorageUnit.dcTax1Rate,
       tax2Rate: siteLinkStorageUnit.dcTax2Rate,
@@ -30,17 +31,35 @@ export class StorageUnitConverter {
       stdWeeklyRate: siteLinkStorageUnit.dcStdWeeklyRate,
       mapTop: siteLinkStorageUnit.dcMapTop,
       mapLeft: siteLinkStorageUnit.dcMapLeft,
-      mapTheta: siteLinkStorageUnit.dcMapTheta
+      mapTheta: siteLinkStorageUnit.dcMapTheta,
+      mapReversWL: siteLinkStorageUnit.bMapReversWL,
+      entryLoc: siteLinkStorageUnit.iEntryLoc,
+      doorType: siteLinkStorageUnit.iDoorType,
+      ada: siteLinkStorageUnit.iADA,
+      stdSecDep: siteLinkStorageUnit.dcStdSecDep,
+      mobile: siteLinkStorageUnit.bMobile,
+      siteID: siteLinkStorageUnit.SiteID,
+      locationCode: siteLinkStorageUnit.sLocationCode,
+      pushRateNotRounded: siteLinkStorageUnit.dcPushRate_NotRounded,
+      rmRoundTo: siteLinkStorageUnit.dcRM_RoundTo,
+      serviceRequired: siteLinkStorageUnit.bServiceRequired,
+      daysVacant: siteLinkStorageUnit.iDaysVacant,
+      excludeFromWebsite: siteLinkStorageUnit.bExcludeFromWebsite,
+      defaultCoverageID: siteLinkStorageUnit.DefaultCoverageID,
+      webRate: siteLinkStorageUnit.dcWebRate,
+      preferredRate: siteLinkStorageUnit.dcPreferredRate,
+      preferredChannelType: siteLinkStorageUnit.iPreferredChannelType,
+      preferredIsPushRate: siteLinkStorageUnit.bPreferredIsPushRate
     });
   }
 
   static toSiteLinkStorageUnit(vapiStorageUnit: VapiStorageUnit): SiteLinkStorageUnit {
     return new SiteLinkStorageUnit({
-      retCode: vapiStorageUnit.retCode,
-      unitTypeID: vapiStorageUnit.unitTypeID,
+      Ret_Code: vapiStorageUnit.retCode,
+      UnitTypeID: vapiStorageUnit.unitTypeID,
       sTypeName: vapiStorageUnit.typeName,
       iDefLeaseNum: vapiStorageUnit.defLeaseNum,
-      unitID: vapiStorageUnit.unitId,
+      UnitID: vapiStorageUnit.unitID,
       sUnitName: vapiStorageUnit.unitName,
       dcWidth: vapiStorageUnit.width,
       dcLength: vapiStorageUnit.length,
@@ -55,6 +74,7 @@ export class StorageUnitConverter {
       bCorporate: vapiStorageUnit.corporate,
       bRentable: vapiStorageUnit.rentable,
       dcBoardRate: vapiStorageUnit.boardRate,
+      sUnitNote: vapiStorageUnit.unitNote,
       dcPushRate: vapiStorageUnit.pushRate,
       dcTax1Rate: vapiStorageUnit.tax1Rate,
       dcTax2Rate: vapiStorageUnit.tax2Rate,
@@ -62,7 +82,25 @@ export class StorageUnitConverter {
       dcStdWeeklyRate: vapiStorageUnit.stdWeeklyRate,
       dcMapTop: vapiStorageUnit.mapTop,
       dcMapLeft: vapiStorageUnit.mapLeft,
-      dcMapTheta: vapiStorageUnit.mapTheta
+      dcMapTheta: vapiStorageUnit.mapTheta,
+      bMapReversWL: vapiStorageUnit.mapReversWL,
+      iEntryLoc: vapiStorageUnit.entryLoc,
+      iDoorType: vapiStorageUnit.doorType,
+      iADA: vapiStorageUnit.ada,
+      dcStdSecDep: vapiStorageUnit.stdSecDep,
+      bMobile: vapiStorageUnit.mobile,
+      SiteID: vapiStorageUnit.siteID,
+      sLocationCode: vapiStorageUnit.locationCode,
+      dcPushRate_NotRounded: vapiStorageUnit.pushRateNotRounded,
+      dcRM_RoundTo: vapiStorageUnit.rmRoundTo,
+      bServiceRequired: vapiStorageUnit.serviceRequired,
+      iDaysVacant: vapiStorageUnit.daysVacant,
+      bExcludeFromWebsite: vapiStorageUnit.excludeFromWebsite,
+      DefaultCoverageID: vapiStorageUnit.defaultCoverageID,
+      dcWebRate: vapiStorageUnit.webRate,
+      dcPreferredRate: vapiStorageUnit.preferredRate,
+      iPreferredChannelType: vapiStorageUnit.preferredChannelType,
+      bPreferredIsPushRate: vapiStorageUnit.preferredIsPushRate
     });
   }
 }
