@@ -189,7 +189,8 @@ describe("Primary Unit Tests", () => {
                 "name": "makeReservation",
                 "arguments": {
                   "tenantID": "401557",
-                  "unitID": "92110"
+                  "unitID": "92110",
+                  "dateNeeded": "2022-01-01"
                 }
               }
             }

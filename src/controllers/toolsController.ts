@@ -15,9 +15,20 @@ const funcMap: any = {
 
     const vapiReservation: VapiReservation = new VapiReservation(args);
 
-    //convert the needed date into iso string
-    if(vapiReservation.needed)
-      vapiReservation.needed = new Date(vapiReservation.needed).toISOString();
+    //make sure the date is in a format we can use
+    let dateProvided : Date = new Date(args.dateNeeded);
+    const now : Date = new Date();
+
+    if(dateProvided.getFullYear() < now.getFullYear()){
+      dateProvided.setFullYear(now.getFullYear())
+    }
+
+    //if less than, then set to next year
+    if(dateProvided.getTime() < now.getTime()){
+      dateProvided.setFullYear(dateProvided.getFullYear() + 1);
+    }
+
+    vapiReservation.needed = dateProvided.toISOString();
 
     const reservation: VapiReservation | null = await siteLinkForVapi.makeReservation(vapiReservation);
 
