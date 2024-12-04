@@ -14,6 +14,6 @@ export class MoveInParams extends SiteLinkMoveIn {
         this.sLocationCode = data.sLocationCode ?? null;
         this.sCorpUserName = data.sCorpUserName ?? null;
         this.sCorpPassword = data.sCorpPassword ?? null;
-        this.bTestMode = data.bTestMode ?? false;
+        this.bTestMode = data.bTestMode ?? true;
     }
 }

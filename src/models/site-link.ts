@@ -6,6 +6,10 @@ import { ReservationNewWithSourceV5Params } from "./reservation-new-with-source-
 import { SiteLinkReservation } from "./site-link-reservation";
 
 import * as soap from 'soap';
+import { SiteLinkMoveIn } from "./site-link-move-in";
+import { MoveInParams } from "./move-in-params";
+import { SiteLinkMoveInCostRetrieve } from "./site-link-move-in-cost-retrieve";
+import { MoveInCostRetrieveParams } from "./move-in-cost-retrieve-params";
 const SITELINK_CORP_CODE = process.env.SITELINK_CORP_CODE;
 const SITELINK_LOCATION_CODE = process.env.SITELINK_LOCATION_CODE;
 const SITELINK_API_KEY = process.env.SITELINK_API_KEY;
@@ -33,6 +37,60 @@ class SiteLink {
 
         client = await soap.createClientAsync(url);
 
+    }
+
+    public async moveInCostRetrieve(siteLinkMoveInCostRetrieve: SiteLinkMoveInCostRetrieve): Promise<SiteLinkMoveInCostRetrieve | null> {
+
+        if(client === null){
+            await this.init();
+        }
+
+        const functionArgs : MoveInCostRetrieveParams = new MoveInCostRetrieveParams(siteLinkMoveInCostRetrieve);
+
+        //add the common api params
+        Object.assign(functionArgs, commonApiParams);
+
+        let soapResult: any = null;
+        if (client !== null) {
+            soapResult = await client.MoveInCostRetrieveAsync(functionArgs);
+        }
+
+        const dataSet = soapResult[0].MoveInCostRetrieveResult.diffgram.NewDataSet;
+        // const rtTable = dataSet.RT;
+
+        // //check if success
+        // if(rtTable.RetCode <= 0){
+        //     throw rtTable.Ret_Msg;
+        // }
+
+        return dataSet.Table;
+    }
+
+    public async doMoveIn(siteLinkMoveIn: SiteLinkMoveIn): Promise<SiteLinkMoveIn | null> {
+
+        if(client === null){
+            await this.init();
+        }
+
+        const functionArgs : MoveInParams = new MoveInParams(siteLinkMoveIn);
+
+        //add the common api params
+        Object.assign(functionArgs, commonApiParams);
+
+        let soapResult: any = null;
+        if (client !== null) {
+            soapResult = await client.MoveInAsync(functionArgs);
+        }
+
+        const dataSet = soapResult[0].MoveInResult.diffgram.NewDataSet;
+        const rtTable = dataSet.RT;
+
+        //check if success
+        if(rtTable.Ret_Code < 0){
+            throw rtTable.Ret_Msg;
+        }
+
+        return siteLinkMoveIn;
     }
 
     public async makeReservation(siteLinkReservation: SiteLinkReservation): Promise<SiteLinkReservation | null> {

@@ -8,8 +8,47 @@ import siteLinkForVapi from "../models/site-link-for-vapi";
 import { VapiTenant } from "../models/vapi-tenant";
 import { VapiStorageUnit } from "../models/vapi-storage-unit";
 import { VapiReservation } from "../models/vapi-reservation";
+import { VapiMoveIn } from "../models/vapi-move-in";
 
 const funcMap: any = {
+
+  performMoveIn : async (args: any): Promise<any> => {
+
+    const vapiMoveIn: VapiMoveIn = new VapiMoveIn(args);
+
+    //make sure the date is in a format we can use
+    let dateProvided : Date = new Date(args.dateNeeded);
+    const now : Date = new Date();
+
+    if(dateProvided.getFullYear() < now.getFullYear()){
+      dateProvided.setFullYear(now.getFullYear())
+    }
+
+    //if less than, then set to next year
+    if(dateProvided.getTime() < now.getTime()){
+      dateProvided.setFullYear(dateProvided.getFullYear() + 1);
+    }
+
+    vapiMoveIn.tenantId = parseInt(args.tenantID);
+    vapiMoveIn.unitId = parseInt(args.unitID);
+    vapiMoveIn.startDate = dateProvided.toISOString();
+    vapiMoveIn.creditCardType = 6;
+    vapiMoveIn.creditCardCVV = args.cvv;
+    vapiMoveIn.creditCardNumber = args.creditCard;
+    vapiMoveIn.expirationDate = args.expirationDate;
+    vapiMoveIn.billingName = args.billingName;
+
+    const moveIn: VapiMoveIn | null = await siteLinkForVapi.doMoveIn(vapiMoveIn);
+
+    const success = moveIn !== null; 
+
+    const result = {
+      success: success,
+      moveIn: moveIn
+    }
+
+    return result;
+  },
 
   makeReservation : async (args: any): Promise<any> => {
 

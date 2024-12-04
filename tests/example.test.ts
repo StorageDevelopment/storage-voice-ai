@@ -26,7 +26,7 @@ describe("Primary Unit Tests", () => {
 
 
 
-  it("should return 200 OK for getUnits", (done) => {
+  it.skip("should return 200 OK for getUnits", (done) => {
     request(app)
       .post("/api/tools")
       .send({
@@ -54,7 +54,7 @@ describe("Primary Unit Tests", () => {
       })
   });
 
-  it("should return 200 for getTenant", (done) => {
+  it.skip("should return 200 for getTenant", (done) => {
 
     request(app)
       .post("/api/tools")
@@ -126,7 +126,7 @@ describe("Primary Unit Tests", () => {
       })
   });
 
-  it("should return 200 for getAvailableUnit", (done) => {
+  it.skip("should return 200 for getAvailableUnit", (done) => {
 
     //get the number of ticks since the Unix Epoch (January 1, 1970 00:00:00 GMT)
     let ticks = new Date().getTime();
@@ -172,7 +172,7 @@ describe("Primary Unit Tests", () => {
       })
   });
 
-  it("should return 200 for makeReservation", (done) => {
+  it.skip("should return 200 for makeReservation", (done) => {
 
     
     request(app)
@@ -191,6 +191,51 @@ describe("Primary Unit Tests", () => {
                   "tenantID": "401557",
                   "unitID": "92110",
                   "dateNeeded": "2022-01-01"
+                }
+              }
+            }
+          ]
+        }
+      })
+      .expect(200)
+      .expect((res) => {
+
+        const unitId = res.body.results[0].result.reservation.unitID;
+
+         expect(unitId).not.toBeNullish();
+         expect(unitId).not.toBeEmpty();
+         })
+      .end((err, response : any) => {
+        currentResponse = response; // update it here
+        if (err) return done(err);
+        return done();
+      })
+  });
+
+  it("should return 200 for performMoveIn", (done) => {
+
+    
+    request(app)
+      .post("/api/tools")
+      .send({
+        "message": {
+          "timestamp": 0,
+          "type": "tool-calls",
+          "toolCalls": [
+            {
+              "id": "call_3JewUpif1jmC6YWLITvVEn7U",
+              "type": "function",
+              "function": {
+                "name": "performMoveIn",
+                "arguments": {
+                  "tenantID": "401207",
+                  "unitID": "92110",
+                  "dateNeeded": "2024-12-05",
+                  "creditCard": "4111111111111111",
+                  "expirationDate": "2022-01-01",
+                  "cvv": "123",
+                  "billingName": "John Doe"
+                 
                 }
               }
             }

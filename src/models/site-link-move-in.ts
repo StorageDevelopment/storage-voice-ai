@@ -1,7 +1,7 @@
 export class SiteLinkMoveIn {
-  public tenantID: number | null;
+  public TenantID: number | null;
   public sAccessCode: string | null;
-  public unitID: number | null;
+  public UnitID: number | null;
   public dStartDate: string | null;
   public dEndDate: string | null;
   public dcPaymentAmount: number | null;
@@ -14,16 +14,16 @@ export class SiteLinkMoveIn {
   public sBillingZipCode: string | null;
   
   constructor(data: any) {
-    this.tenantID = data.TenantID ?? -1;
+    this.TenantID = data.TenantID ?? -1;
     this.sAccessCode = data.sAccessCode ?? null;
-    this.unitID = data.UnitID ?? -1;
+    this.UnitID = data.UnitID ?? -1;
     this.dStartDate = data.dStartDate ?? new Date().toISOString()
-    this.dEndDate = data.dStartDate ?? new Date().toISOString()
+    this.dEndDate = data.dEndDate ?? new Date().toISOString()
     this.dcPaymentAmount = data.dcPaymentAmount ?? -1;
     this.iCreditCardType = data.iCreditCardType ?? 6; // defaulted to visa for now
     this.sCreditCardNumber = data.sCreditCardNumber ?? null;
     this.sCreditCardCVV = data.sCreditCardCVV ?? null;
-    this.dExpirationDate = data.dStartDate ?? new Date().toISOString()
+    this.dExpirationDate = data.dExpirationDate ?? new Date().toISOString()
     this.sBillingName = data.sBillingName ?? null;
     this.sBillingAddress = data.sBillingAddress ?? null;
     this.sBillingZipCode = data.sBillingZipCode ?? null;

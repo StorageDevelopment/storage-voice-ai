@@ -9,12 +9,58 @@ import { VapiStorageUnit } from './vapi-storage-unit';
 import { VapiReservation } from './vapi-reservation';
 import { SiteLinkReservation } from './site-link-reservation';
 import { ReservationConverter } from './reservation-converter';
+import { VapiMoveIn } from './vapi-move-in';
+import { MoveInConverter } from './move-in-converter';
+import { SiteLinkMoveIn } from './site-link-move-in';
+import { SiteLinkMoveInCostRetrieve } from './site-link-move-in-cost-retrieve';
 
 class SiteLinkForVapi {
 
 
     public constructor() {
 
+    }
+
+    public async doMoveIn(args: VapiMoveIn): Promise<VapiMoveIn | null> {
+
+        const siteLinkMoveIn: SiteLinkMoveIn = MoveInConverter.toSiteLinkMoveIn(args);
+
+        //need to make call to moveincostretrieve
+        const costRetrieve : SiteLinkMoveInCostRetrieve = new SiteLinkMoveInCostRetrieve(siteLinkMoveIn);
+        costRetrieve.iUnitID = args.unitId;
+        costRetrieve.dMoveInDate = new Date().toISOString();
+        const siteLinkMoveInCostRetrieve: any = await sitelink.moveInCostRetrieve(costRetrieve);
+
+        let startDate ="";
+        let endDate = "";
+        let totalCost = 0;
+        let storeDate = true;
+        for(const key of siteLinkMoveInCostRetrieve){
+            totalCost += parseFloat(key.ChargeAmount);
+
+            if(storeDate){   
+            
+            startDate = key.StartDate;
+            endDate = key.EndDate;
+            storeDate = false;
+            }
+        }
+
+        
+
+        siteLinkMoveIn.dcPaymentAmount = totalCost;
+        siteLinkMoveIn.dStartDate = startDate;
+        siteLinkMoveIn.dEndDate = endDate;
+
+        const createdSiteLinkMoveIn: SiteLinkMoveIn | null = await sitelink.doMoveIn(siteLinkMoveIn);
+
+        let vapiMoveIn: VapiMoveIn | null = null;
+        if(createdSiteLinkMoveIn !== null)
+            vapiMoveIn = MoveInConverter.toVapiMoveIn(createdSiteLinkMoveIn);
+
+        
+        return vapiMoveIn;
+       
     }
 
     public async makeReservation(args: VapiReservation): Promise<VapiReservation | null> {
