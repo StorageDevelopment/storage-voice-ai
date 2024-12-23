@@ -12,25 +12,33 @@ import { VapiMoveIn } from "../models/vapi-move-in";
 
 const funcMap: any = {
 
-  performMoveIn : async (args: any): Promise<any> => {
+  performMoveIn: async (args: any): Promise<any> => {
 
     const vapiMoveIn: VapiMoveIn = new VapiMoveIn(args);
 
     //make sure the date is in a format we can use
-    let dateProvided : Date = new Date(args.dateNeeded);
-    const now : Date = new Date();
+    let dateProvided: Date = new Date(args.dateNeeded);
 
-    if(dateProvided.getFullYear() < now.getFullYear()){
+    //convert date to UTC (since initialized with utc)
+    dateProvided = new Date(dateProvided.getTime() + dateProvided.getTimezoneOffset() * 60000);
+    
+    const now: Date = new Date();
+
+    if (dateProvided.getFullYear() < now.getFullYear()) {
       dateProvided.setFullYear(now.getFullYear())
     }
 
+    const sameDateAsToday = dateProvided.getFullYear() === now.getFullYear()
+      && dateProvided.getMonth() === now.getMonth()
+      && dateProvided.getDate() === now.getDate();
+
     //if less than, then set to next year
-    if(dateProvided.getTime() < now.getTime()){
+    if (!sameDateAsToday && dateProvided.getTime() < now.getTime()) {
       dateProvided.setFullYear(dateProvided.getFullYear() + 1);
     }
 
-    vapiMoveIn.tenantId = parseInt(args.tenantID);
-    vapiMoveIn.unitId = parseInt(args.unitID);
+    vapiMoveIn.tenantID = parseInt(args.tenantID);
+    vapiMoveIn.unitID = parseInt(args.unitID);
     vapiMoveIn.startDate = dateProvided.toISOString();
     vapiMoveIn.creditCardType = 6;
     vapiMoveIn.creditCardCVV = args.cvv;
@@ -40,7 +48,7 @@ const funcMap: any = {
 
     const moveIn: VapiMoveIn | null = await siteLinkForVapi.doMoveIn(vapiMoveIn);
 
-    const success = moveIn !== null; 
+    const success = moveIn !== null;
 
     const result = {
       success: success,
@@ -50,20 +58,20 @@ const funcMap: any = {
     return result;
   },
 
-  makeReservation : async (args: any): Promise<any> => {
+  makeReservation: async (args: any): Promise<any> => {
 
     const vapiReservation: VapiReservation = new VapiReservation(args);
 
     //make sure the date is in a format we can use
-    let dateProvided : Date = new Date(args.dateNeeded);
-    const now : Date = new Date();
+    let dateProvided: Date = new Date(args.dateNeeded);
+    const now: Date = new Date();
 
-    if(dateProvided.getFullYear() < now.getFullYear()){
+    if (dateProvided.getFullYear() < now.getFullYear()) {
       dateProvided.setFullYear(now.getFullYear())
     }
 
     //if less than, then set to next year
-    if(dateProvided.getTime() < now.getTime()){
+    if (dateProvided.getTime() < now.getTime()) {
       dateProvided.setFullYear(dateProvided.getFullYear() + 1);
     }
 
@@ -71,7 +79,7 @@ const funcMap: any = {
 
     const reservation: VapiReservation | null = await siteLinkForVapi.makeReservation(vapiReservation);
 
-    const success = reservation !== null; 
+    const success = reservation !== null;
 
     const result = {
       success: success,
@@ -81,11 +89,11 @@ const funcMap: any = {
     return result;
   },
 
-  getAvailableUnit : async (args: any): Promise<any> => {
+  getAvailableUnit: async (args: any): Promise<any> => {
 
     const availableUnit: VapiStorageUnit | null = await siteLinkForVapi.getAvailableUnit(args);
 
-    const success = availableUnit !== null; 
+    const success = availableUnit !== null;
 
     const result = {
       success: success,
@@ -95,7 +103,7 @@ const funcMap: any = {
     return result;
   },
 
-  getUnits : async (args: any): Promise<any> => {
+  getUnits: async (args: any): Promise<any> => {
 
     const units: VapiStorageUnit[] = await siteLinkForVapi.getUnits();
 
@@ -107,7 +115,7 @@ const funcMap: any = {
     return result;
   },
 
-  createAccount : async (args: any): Promise<any> => {
+  createAccount: async (args: any): Promise<any> => {
 
     //createa a vapi tenant
     const vapiTenant: VapiTenant = new VapiTenant(args);
@@ -124,7 +132,7 @@ const funcMap: any = {
     return result;
   },
 
-  getAccount : async (args: any): Promise<any> => {
+  getAccount: async (args: any): Promise<any> => {
 
     //createa a vapi tenant
     const vapiTenant: VapiTenant = new VapiTenant(args);
@@ -167,7 +175,7 @@ export const toolsController = asyncHandler(async (req: Request, res: Response) 
     if (funcMap[functionName]) {
       resultObject.result = await funcMap[functionName](args);
     } else {
-      
+
       throw "Function not found: " + functionName;
 
     }

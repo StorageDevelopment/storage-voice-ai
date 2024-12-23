@@ -229,8 +229,8 @@ describe("Primary Unit Tests", () => {
                 "name": "performMoveIn",
                 "arguments": {
                   "tenantID": "401207",
-                  "unitID": "92110",
-                  "dateNeeded": "2024-12-05",
+                  "unitID": "92112",
+                  "dateNeeded": "2024-12-14",
                   "creditCard": "4111111111111111",
                   "expirationDate": "2022-01-01",
                   "cvv": "123",
@@ -245,7 +245,7 @@ describe("Primary Unit Tests", () => {
       .expect(200)
       .expect((res) => {
 
-        const unitId = res.body.results[0].result.reservation.unitID;
+        const unitId = res.body.results[0].result.moveIn.unitID;
 
          expect(unitId).not.toBeNullish();
          expect(unitId).not.toBeEmpty();

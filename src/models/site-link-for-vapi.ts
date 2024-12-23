@@ -27,8 +27,8 @@ class SiteLinkForVapi {
 
         //need to make call to moveincostretrieve
         const costRetrieve : SiteLinkMoveInCostRetrieve = new SiteLinkMoveInCostRetrieve(siteLinkMoveIn);
-        costRetrieve.iUnitID = args.unitId;
-        costRetrieve.dMoveInDate = new Date().toISOString();
+        costRetrieve.iUnitID = args.unitID;
+        costRetrieve.dMoveInDate = args.startDate;
         const siteLinkMoveInCostRetrieve: any = await sitelink.moveInCostRetrieve(costRetrieve);
 
         let startDate ="";

@@ -1,7 +1,7 @@
 export class VapiMoveIn {
-  public tenantId: number | null;
+  public tenantID: number | null;
   public accessCode: string | null;
-  public unitId: number | null;
+  public unitID: number | null;
   public startDate: string | null;
   public endDate: string | null;
   public paymentAmount: number | null;
@@ -14,18 +14,18 @@ export class VapiMoveIn {
   public billingZipCode: string | null;
 
   constructor(data: any) {
-    this.tenantId = data.TenantID ?? -1;
-    this.accessCode = data.sAccessCode ?? null;
-    this.unitId = data.UnitID ?? -1;
-    this.startDate = data.dStartDate ?? new Date().toISOString();
-    this.endDate = data.dEndDate ?? new Date().toISOString();
-    this.paymentAmount = data.dcPaymentAmount ?? -1;
-    this.creditCardType = data.iCreditCardType ?? 6; // defaulted to visa for now
-    this.creditCardNumber = data.sCreditCardNumber ?? null;
-    this.creditCardCVV = data.sCreditCardCVV ?? null;
-    this.expirationDate = data.dExpirationDate ?? new Date().toISOString();
-    this.billingName = data.sBillingName ?? null;
-    this.billingAddress = data.sBillingAddress ?? null;
-    this.billingZipCode = data.sBillingZipCode ?? null;
+    this.tenantID = data.tenantID ?? -1;
+    this.accessCode = data.accessCode ?? null;
+    this.unitID = data.unitID ?? -1;
+    this.startDate = data.startDate ?? new Date().toISOString();
+    this.endDate = data.endDate ?? new Date().toISOString();
+    this.paymentAmount = data.paymentAmount ?? -1;
+    this.creditCardType = data.creditCardType ?? 6; // defaulted to visa for now
+    this.creditCardNumber = data.creditCardNumber ?? null;
+    this.creditCardCVV = data.creditCardCVV ?? null;
+    this.expirationDate = data.expirationDate ?? new Date().toISOString();
+    this.billingName = data.billingName ?? null;
+    this.billingAddress = data.billingAddress ?? null;
+    this.billingZipCode = data.billingZipCode ?? null;
   }
 }

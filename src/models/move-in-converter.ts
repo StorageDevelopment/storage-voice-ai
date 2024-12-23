@@ -22,9 +22,9 @@ export class MoveInConverter {
 
   static toSiteLinkMoveIn(vapiMoveIn: VapiMoveIn): SiteLinkMoveIn {
     return new SiteLinkMoveIn({
-      TenantID: vapiMoveIn.tenantId,
+      TenantID: vapiMoveIn.tenantID,
       sAccessCode: vapiMoveIn.accessCode,
-      UnitID: vapiMoveIn.unitId,
+      UnitID: vapiMoveIn.unitID,
       dStartDate: vapiMoveIn.startDate,
       dEndDate: vapiMoveIn.endDate,
       dcPaymentAmount: vapiMoveIn.paymentAmount,
