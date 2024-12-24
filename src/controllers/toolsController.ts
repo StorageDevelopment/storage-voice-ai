@@ -183,7 +183,4 @@ export const toolsController = asyncHandler(async (req: Request, res: Response) 
     responseObject.results.push(resultObject);
 
   }
-
-  res.send(responseObject);
-
 });
