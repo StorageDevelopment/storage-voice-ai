@@ -6,7 +6,10 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
   //analyze the tool list and make the appropriate calls to the storage system
   const body = req.body;
 
-  const responseObject: any = { message: "success"};
+  const responseObject: any = {
+     message: "success",
+     checklistId: 3
+    };
 
   res.send(responseObject);
 

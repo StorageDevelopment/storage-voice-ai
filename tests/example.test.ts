@@ -269,7 +269,17 @@ describe("Management App Unit Testing", () => {
         "user": "username",
         "pass": "password"
       })
-      .expect(200, done);
+      .expect(200)
+      .expect((res) => {
+
+        const checklistId = res.body.checklistId;
+
+        expect(checklistId).not.toBeNullish();
+        expect(checklistId).not.toBeEmpty();
+       
+      });
+
+      done();
 
   });
 
@@ -278,14 +288,17 @@ describe("Management App Unit Testing", () => {
     request(app)
       .get("/api/mgmt/checklists/1")
       .send()
-      .expect(200, done)
+      .expect(200)
       .expect((res) => {
 
-        const checklistId = res.body[0].id;
+        const taskId = res.body[0].id;
 
-        expect(checklistId).not.toBeNullish();
-        expect(checklistId).not.toBeEmpty();
-      })
+        expect(taskId).not.toBeNullish();
+        expect(taskId).not.toBeEmpty();
+       
+      });
+
+      done();
 
   });
 
