@@ -8,7 +8,8 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
 
   const responseObject: any = {
      message: "success",
-     checklistId: 1
+     checklistId: 1,
+     userId: 1,
     };
 
   res.send(responseObject);

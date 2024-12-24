@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import client from "../models/datastore";
 
-const checklists = [[
+const checklists : any[] = [[
   // {
   //   id: 0,
   //   orderIdx: 0,
@@ -85,40 +85,59 @@ export const checklistsControllerGetChecklist = asyncHandler(async (req: Request
 
 });
 
+export const checklistsControllerClearStatus = asyncHandler(async (req: Request, res: Response) => {
+  //analyze the tool list and make the appropriate calls to the storage system
+  const body = req.body;
+  const checklistId = parseInt(req.params.checklistId);
+
+  //validate the checklistId
+  if (checklistId < 0 || checklistId >= checklists.length) {
+    res.status(404).send("Checklist not found");
+    return;
+  }
+
+  const checklist = checklists[checklistId];
+
+  for(let item of checklist) {
+    item.status = "open";
+    delete item.timestamp;
+    delete item.completedBy;
+    delete item.gpsLocation;
+  }
+
+  res.send(checklist);
+
+});
+
 export const checklistsControllerUpdateItem = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
   const body = req.body;
-  const checklistId = req.params.checklistId;
-  const itemId = req.params.itemId;
+  const checklistId = parseInt(req.params.checklistId);
+  const itemId = body.itemId;
+  const userId = body.userId;
+  const gpsLocation = body.gpsLocation;
+  
 
-  const checklist = [
-    {
-      id: 0,
-      orderIdx: 0,
-      name: "Task 1",
-      description: "Description 1",
-      status: "closed",
-      timestamp: new Date().toISOString(),
-      completedBy: "User 1",
-      gpsLocation: "40.0000, -105.0000"
-    },
-    {
-      id: 1,
-      orderIdx: 1,
-      name: "Task 2",
-      description: "Description 2",
-      status: "open"
-    },
-    {
-      id: 2,
-      orderIdx: 2,
-      name: "Task 3",
-      description: "Description 3",
-      status: "open"
-    }
-  ];
+  //validate the checklistId
+  if (checklistId < 0 || checklistId >= checklists.length) {
+    res.status(404).send("Checklist not found");
+    return;
+  }
+  
+  const checklist = checklists[checklistId];
 
-  //const responseObject: any = { results: [] };
+  //validate the itemId
+  if (itemId < 0 || itemId >= checklist.length) {
+    res.status(404).send("Item not found");
+    return;
+  }
+
+  const item : any = checklist[itemId];
+
+  item.status = "closed";
+  item.timestamp = new Date().toISOString();
+  item.completedBy = `User ${userId}`;
+  item.gpsLocation = gpsLocation;
 
   res.send(checklist);
 

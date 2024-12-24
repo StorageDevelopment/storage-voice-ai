@@ -6,17 +6,17 @@ const assert = require("assert");
 // you can use a global variable if tests span many files
 let currentResponse: any | null = null;
 
-afterEach(function () {
-  const errorBody = currentResponse && currentResponse.body;
+// afterEach(function () {
+//   const errorBody = currentResponse && currentResponse.body;
 
-  if (this.currentTest) {
-    if (this.currentTest.state === 'failed' && errorBody) {
-      console.log(errorBody);
-    }
-  }
+//   if (this.currentTest) {
+//     if (this.currentTest.state === 'failed' && errorBody) {
+//       console.log(errorBody);
+//     }
+//   }
 
-  currentResponse = null;
-});
+//   currentResponse = null;
+// });
 
 
 // describe.skip("Primary Unit Tests", () => {
@@ -276,10 +276,13 @@ describe("Management App Unit Testing", () => {
 
         expect(checklistId).not.toBeNullish();
         expect(checklistId).not.toBeEmpty();
-       
+
+      })
+      .end(function(err, res) {
+        if (err) throw err;
       });
 
-      done();
+    done();
 
   });
 
@@ -295,31 +298,72 @@ describe("Management App Unit Testing", () => {
 
         expect(taskId).not.toBeNullish();
         expect(taskId).not.toBeEmpty();
-       
+
+      })
+      .end(function(err, res) {
+        if (err) throw err;
       });
 
-      done();
+
+    done();
 
   });
 
-  // it("should return 200 for updating checklist", (done) => {
+  it("should return 200 for clearing checklist", (done) => {
 
-  //   request(app)
-  //     .post("/api/mgmt/checklists/1/item/1")
-  //     .send()
-  //     .expect(200)
-  //     .expect((res) => {
+    request(app)
+      .post("/api/mgmt/checklists/1/clearstatus")
+      .send()
+      .expect(200)
+      .expect((res) => {
 
-  //       const taskId = res.body[0].id;
+        for (const item of res.body) {
 
-  //       expect(taskId).not.toBeNullish();
-  //       expect(taskId).not.toBeEmpty();
-       
-  //     });
+          const status = item.status;
 
-  //     done();
+          expect(status).toEqual("open");
+          
+        }
 
-  // });
+      })
+      .end(function(err, res) {
+        if (err) throw err;
+      });
+
+
+    done();
+
+  });
+
+  it("should return 200 for updating checklist item", (done) => {
+
+    request(app)
+      .post("/api/mgmt/checklists/1/update")
+      .send({
+        userId: 1,
+        itemId: 1,
+        gpsLocation: "123.456, 789.012"
+      })
+      .expect(200)
+      .expect((res) => {
+
+        const item = res.body.filter((item: any) => item.id === 1)[0];
+        expect(item).not.toBeNullish();
+        expect(item).not.toBeEmpty();
+        expect(item.status).toEqual("closed");
+        expect(item.timestamp).not.toBeEmpty();
+        expect(item.gpsLocation).not.toBeEmpty();
+        expect(item.completedBy).not.toBeEmpty();
+
+      })
+      .end(function(err, res) {
+        if (err) throw err;
+      });
+
+
+    done();
+
+  });
 
 
 });
