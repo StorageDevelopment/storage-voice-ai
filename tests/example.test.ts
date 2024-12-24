@@ -283,7 +283,7 @@ describe("Management App Unit Testing", () => {
 
   });
 
-  it("should return 200 for checklist", (done) => {
+  it("should return 200 for getting checklist", (done) => {
 
     request(app)
       .get("/api/mgmt/checklists/1")
@@ -301,6 +301,25 @@ describe("Management App Unit Testing", () => {
       done();
 
   });
+
+  // it("should return 200 for updating checklist", (done) => {
+
+  //   request(app)
+  //     .post("/api/mgmt/checklists/1/item/1")
+  //     .send()
+  //     .expect(200)
+  //     .expect((res) => {
+
+  //       const taskId = res.body[0].id;
+
+  //       expect(taskId).not.toBeNullish();
+  //       expect(taskId).not.toBeEmpty();
+       
+  //     });
+
+  //     done();
+
+  // });
 
 
 });
