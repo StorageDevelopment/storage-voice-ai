@@ -174,7 +174,7 @@ afterEach(function () {
 
 //   it.skip("should return 200 for makeReservation", (done) => {
 
-    
+
 //     request(app)
 //       .post("/api/tools")
 //       .send({
@@ -214,7 +214,7 @@ afterEach(function () {
 
 //   it.skip("should return 200 for performMoveIn", (done) => {
 
-    
+
 //     request(app)
 //       .post("/api/tools")
 //       .send({
@@ -235,7 +235,7 @@ afterEach(function () {
 //                   "expirationDate": "2022-01-01",
 //                   "cvv": "123",
 //                   "billingName": "John Doe"
-                 
+
 //                 }
 //               }
 //             }
@@ -262,7 +262,7 @@ afterEach(function () {
 describe("Management App Unit Testing", () => {
 
   it("should return 200 for management app login", (done) => {
-    
+
     request(app)
       .post("/api/mgmt/login")
       .send({
@@ -270,7 +270,23 @@ describe("Management App Unit Testing", () => {
         "pass": "password"
       })
       .expect(200, done);
-     
+
+  });
+
+  it("should return 200 for checklist", (done) => {
+
+    request(app)
+      .get("/api/mgmt/checklists/1")
+      .send()
+      .expect(200, done)
+      .expect((res) => {
+
+        const checklistId = res.body[0].id;
+
+        expect(checklistId).not.toBeNullish();
+        expect(checklistId).not.toBeEmpty();
+      })
+
   });
 
 

@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { loginController } from "../controllers/loginController";
-import { usersControllerTaskList } from "../controllers/usersController";
+import { checklistsControllerGet } from "../controllers/checklistsController";
 
 const router = Router();
 
 router.post("/login", loginController);
-router.get("/users/:userId/list", usersControllerTaskList);
+router.get("/checklists/:checklistId", checklistsControllerGet);
 
 export default router;
 
