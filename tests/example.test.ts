@@ -289,7 +289,7 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for getting checklist", (done) => {
 
     request(app)
-      .get("/api/mgmt/checklists/1")
+      .get("/api/mgmt/tasklists/1")
       .send()
       .expect(200)
       .expect((res) => {
@@ -312,7 +312,7 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for clearing the checklist", (done) => {
 
     request(app)
-      .put("/api/mgmt/checklists/1")
+      .put("/api/mgmt/tasklists/1")
       .send({action: "clearStatus"})
       .expect(200)
       .expect((res) => {
@@ -338,7 +338,7 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for updating checklist item", (done) => {
 
     request(app)
-      .put("/api/mgmt/checklists/1")
+      .put("/api/mgmt/tasklists/1")
       .send({
         action: "updateItem",
         userId: 1,

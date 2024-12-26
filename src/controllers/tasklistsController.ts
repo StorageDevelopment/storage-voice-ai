@@ -7,61 +7,61 @@ const putActions: any = {
   clearStatus: asyncHandler(async (req: Request, res: Response) => {
     const body = req.body;
     const action = body.action;
-    const checklistId = parseInt(req.params.checklistId);
+    const tasklistId = parseInt(req.params.tasklistId);
 
-    //validate the checklistId
-    if (checklistId < 0 || checklistId >= checklists.length) {
-      res.status(404).send({ message: "Checklist not found" });
+    //validate the tasklistId
+    if (tasklistId < 0 || tasklistId >= tasklists.length) {
+      res.status(404).send({ message: "tasklist not found" });
       return;
     }
 
-    const checklist = checklists[checklistId];
+    const tasklist = tasklists[tasklistId];
 
-    for (let item of checklist) {
+    for (let item of tasklist) {
       item.status = "open";
       delete item.timestamp;
       delete item.completedBy;
       delete item.gpsLocation;
     }
 
-    res.send(checklist);
+    res.send(tasklist);
 
   }),
   updateItem: asyncHandler(async (req: Request, res: Response) => {
     //analyze the tool list and make the appropriate calls to the storage system
     const body = req.body;
-    const checklistId = parseInt(req.params.checklistId);
+    const tasklistId = parseInt(req.params.tasklistId);
     const itemId = body.itemId;
     const userId = body.userId;
     const gpsLocation = body.gpsLocation;
 
 
-    //validate the checklistId
-    if (checklistId < 0 || checklistId >= checklists.length) {
-      res.status(404).send("Checklist not found");
+    //validate the tasklistId
+    if (tasklistId < 0 || tasklistId >= tasklists.length) {
+      res.status(404).send("tasklist not found");
       return;
     }
 
-    const checklist = checklists[checklistId];
+    const tasklist = tasklists[tasklistId];
 
     //validate the itemId
-    if (itemId < 0 || itemId >= checklist.length) {
+    if (itemId < 0 || itemId >= tasklist.length) {
       res.status(404).send("Item not found");
       return;
     }
 
-    const item: any = checklist[itemId];
+    const item: any = tasklist[itemId];
 
     item.status = "closed";
     item.timestamp = new Date().toISOString();
     item.completedBy = `User ${userId}`;
     item.gpsLocation = gpsLocation;
 
-    res.send(checklist);
+    res.send(tasklist);
   })
 }; 
 
-const checklists: any[] = [[
+const tasklists: any[] = [[
   // {
   //   id: 0,
   //   orderIdx: 0,
@@ -127,26 +127,26 @@ const checklists: any[] = [[
   }
 ]];
 
-export const getChecklistById = asyncHandler(async (req: Request, res: Response) => {
+export const getTasklistById = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
   const body = req.body;
-  const checklistId = parseInt(req.params.checklistId);
+  const tasklistId = parseInt(req.params.tasklistId);
 
-  //validate the checklistId
-  if (checklistId < 0 || checklistId >= checklists.length) {
-    res.status(404).send({ message: "Checklist not found" });
+  //validate the tasklistId
+  if (tasklistId < 0 || tasklistId >= tasklists.length) {
+    res.status(404).send({ message: "Tasklist not found" });
     return;
   }
 
-  res.send(checklists[checklistId]);
+  res.send(tasklists[tasklistId]);
 });
 
-export const getChecklists = asyncHandler(async (req: Request, res: Response) => {
+export const getTasklists = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
-  res.send(checklists);
+  res.send(tasklists);
 });
 
-export const putChecklistsController = asyncHandler(async (req: Request, res: Response) => {
+export const putTasklistsController = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
   const body = req.body;
   const method = req.method;
