@@ -2,7 +2,66 @@ import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import client from "../models/datastore";
 
-const checklists : any[] = [[
+const putActions: any = {
+
+  clearStatus: asyncHandler(async (req: Request, res: Response) => {
+    const body = req.body;
+    const action = body.action;
+    const checklistId = parseInt(req.params.checklistId);
+
+    //validate the checklistId
+    if (checklistId < 0 || checklistId >= checklists.length) {
+      res.status(404).send({ message: "Checklist not found" });
+      return;
+    }
+
+    const checklist = checklists[checklistId];
+
+    for (let item of checklist) {
+      item.status = "open";
+      delete item.timestamp;
+      delete item.completedBy;
+      delete item.gpsLocation;
+    }
+
+    res.send(checklist);
+
+  }),
+  updateItem: asyncHandler(async (req: Request, res: Response) => {
+    //analyze the tool list and make the appropriate calls to the storage system
+    const body = req.body;
+    const checklistId = parseInt(req.params.checklistId);
+    const itemId = body.itemId;
+    const userId = body.userId;
+    const gpsLocation = body.gpsLocation;
+
+
+    //validate the checklistId
+    if (checklistId < 0 || checklistId >= checklists.length) {
+      res.status(404).send("Checklist not found");
+      return;
+    }
+
+    const checklist = checklists[checklistId];
+
+    //validate the itemId
+    if (itemId < 0 || itemId >= checklist.length) {
+      res.status(404).send("Item not found");
+      return;
+    }
+
+    const item: any = checklist[itemId];
+
+    item.status = "closed";
+    item.timestamp = new Date().toISOString();
+    item.completedBy = `User ${userId}`;
+    item.gpsLocation = gpsLocation;
+
+    res.send(checklist);
+  })
+}; 
+
+const checklists: any[] = [[
   // {
   //   id: 0,
   //   orderIdx: 0,
@@ -68,77 +127,37 @@ const checklists : any[] = [[
   }
 ]];
 
-
-
-export const checklistsControllerGetChecklist = asyncHandler(async (req: Request, res: Response) => {
+export const getChecklistById = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
   const body = req.body;
   const checklistId = parseInt(req.params.checklistId);
 
   //validate the checklistId
   if (checklistId < 0 || checklistId >= checklists.length) {
-    res.status(404).send("Checklist not found");
+    res.status(404).send({ message: "Checklist not found" });
     return;
   }
 
   res.send(checklists[checklistId]);
-
 });
 
-export const checklistsControllerClearStatus = asyncHandler(async (req: Request, res: Response) => {
+export const getChecklists = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
-  const body = req.body;
-  const checklistId = parseInt(req.params.checklistId);
-
-  //validate the checklistId
-  if (checklistId < 0 || checklistId >= checklists.length) {
-    res.status(404).send("Checklist not found");
-    return;
-  }
-
-  const checklist = checklists[checklistId];
-
-  for(let item of checklist) {
-    item.status = "open";
-    delete item.timestamp;
-    delete item.completedBy;
-    delete item.gpsLocation;
-  }
-
-  res.send(checklist);
-
+  res.send(checklists);
 });
 
-export const checklistsControllerUpdateItem = asyncHandler(async (req: Request, res: Response) => {
+export const putChecklistsController = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
   const body = req.body;
-  const checklistId = parseInt(req.params.checklistId);
-  const itemId = body.itemId;
-  const userId = body.userId;
-  const gpsLocation = body.gpsLocation;
-  
+  const method = req.method;
+  const action = body.action;
 
-  //validate the checklistId
-  if (checklistId < 0 || checklistId >= checklists.length) {
-    res.status(404).send("Checklist not found");
-    return;
-  }
-  
-  const checklist = checklists[checklistId];
+  const actionFunction = putActions[action];
 
-  //validate the itemId
-  if (itemId < 0 || itemId >= checklist.length) {
-    res.status(404).send("Item not found");
+  if (!actionFunction) {
+    res.status(404).send({ message: "Action not found" });
     return;
   }
 
-  const item : any = checklist[itemId];
-
-  item.status = "closed";
-  item.timestamp = new Date().toISOString();
-  item.completedBy = `User ${userId}`;
-  item.gpsLocation = gpsLocation;
-
-  res.send(checklist);
-
+  actionFunction(req, res);
 });
