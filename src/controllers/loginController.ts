@@ -10,13 +10,13 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
   const body = req.body;
   const username = body.user;
   const password = body.pass;
-  const location = body.location;
+  const locationShortName = req.params.locationShortName;
 
   //get the datastore
   const datastore = await DatastoreFactory.getDatastore();
 
   //get the user
-  const key = `ma:storage-location:${location.toLowerCase()}`;
+  const key = `ma:storage-location:${locationShortName.toLowerCase()}`;
   const locationObj = await datastore.getJson(key, StorageLocation);
 
   //check if the user exists

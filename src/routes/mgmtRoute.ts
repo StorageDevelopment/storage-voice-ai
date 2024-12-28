@@ -4,7 +4,7 @@ import { getTasklistById, putTasklistsController } from "../controllers/tasklist
 
 const router = Router();
 
-router.post("/login", loginController);
+router.post("/locations/:locationShortName/login", loginController);
 router.get("/locations/:locationShortName/tasklist", getTasklistById);
 router.put("/locations/:locationShortName/tasklist", putTasklistsController);
 
