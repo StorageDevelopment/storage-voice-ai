@@ -35,7 +35,7 @@ const putActions: any = {
     //analyze the tool list and make the appropriate calls to the storage system
     const body = req.body;
     const locationShortName = req.params.locationShortName;
-    const itemId = body.itemId;
+    const taskId = body.taskId;
     const userId = body.userId;
     const gpsLatitude = body.gpsLatitude;
     const gpsLongitude = body.gpsLongitude;
@@ -48,10 +48,10 @@ const putActions: any = {
     const tasklist = locationObj.getTasks();
 
     //validate the itemId
-    if (itemId < 0 || itemId >= tasklist.length)
+    if (taskId < 0 || taskId >= tasklist.length)
       throw new HttpError("Item not found", 404);
     
-    const item = tasklist[itemId];
+    const item = tasklist[taskId];
 
     item.setStatus("closed");
     item.setTimestamp( new Date().toISOString() );

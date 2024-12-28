@@ -360,7 +360,7 @@ describe("Management App Unit Testing", () => {
       .send({
         action: "updateItem",
         userId: 1,
-        itemId: 1,
+        taskId: 1,
         gpsLatitude: 123.456,
         gpsLongitude: -65.2353
 
