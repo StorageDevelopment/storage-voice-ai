@@ -273,10 +273,10 @@ describe("Management App Unit Testing", () => {
       .expect((res) => {
 
 
-        const tasklistId = res.body.tasklistId;
+        const userId = res.body.userId;
         expect(res.status).toEqual(200);
-        expect(tasklistId).not.toBeNullish();
-        expect(tasklistId).not.toBeEmpty();
+        expect(userId).not.toBeNullish();
+        expect(userId).not.toBeEmpty();
 
       })
       .end(function(err, res) {

@@ -29,7 +29,6 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
   
   const responseObject: any = {
      message: "success",
-     tasklistId: locationObj.getId(),
      userId: user.getId(),
     };
 
