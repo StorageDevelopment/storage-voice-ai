@@ -11,7 +11,9 @@
                 "${workspaceFolder}/dist/**/*.js"
             ],
             "env": {
-                "NODE_ENV": "development"
+                "NODE_ENV": "development",
+                "DB_TYPE": "redis",
+                "DB_CONN_STR": "rediss://red-ctko46dds78s73c1c350:m6b6H7v1xpXWNRcvzWtfc8PxYssIvG7X@oregon-redis.render.com:6379"
             },
             "skipFiles": [
                 "<node_internals>/**"
@@ -28,12 +30,15 @@
                 "--timeout",
                 "999999",
                 "--colors",
+                "--exit",
                 "${workspaceFolder}/tests/**/*.test.ts",
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "env": {
-                "NODE_ENV": "development"
+                "NODE_ENV": "development",
+                "DB_TYPE": "redis",
+                "DB_CONN_STR": "rediss://red-ctko46dds78s73c1c350:m6b6H7v1xpXWNRcvzWtfc8PxYssIvG7X@oregon-redis.render.com:6379"
             },
             "skipFiles": [
                 "<node_internals>/**"

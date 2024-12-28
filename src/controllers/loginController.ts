@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import client from "../models/datastore";
+import { DatastoreFactory } from "../models/datastoreFactory";
+import { StorageLocation } from "../models/storage-location";
+import { User } from "../models/user";
+import { HttpError } from "../http-error";
 
 export const loginController = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
@@ -9,10 +12,25 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
   const password = body.pass;
   const location = body.location;
 
+  //get the datastore
+  const datastore = await DatastoreFactory.getDatastore();
+
+  //get the user
+  const key = `ma:storage-location:${location.toLowerCase()}`;
+  const locationObj = await datastore.getJson(key, StorageLocation);
+
+  //check if the user exists
+  const users : User[] = locationObj.getUsers().filter((user) => user.getUsername() === username && user.getPassword() === password);
+
+  if(users.length === 0)
+    throw new HttpError("Unauthorized", 401);
+  
+  const user = users[0];
+  
   const responseObject: any = {
      message: "success",
-     checklistId: 1,
-     userId: 1,
+     tasklistId: locationObj.getId(),
+     userId: user.getId(),
     };
 
   res.send(responseObject);

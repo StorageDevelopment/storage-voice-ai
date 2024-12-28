@@ -1,6 +1,7 @@
 import request from "supertest";
 import app from "../src/app";
 import { expect } from "earl";
+import exp from "constants";
 const assert = require("assert");
 
 // you can use a global variable if tests span many files
@@ -266,35 +267,57 @@ describe("Management App Unit Testing", () => {
     request(app)
       .post("/api/mgmt/login")
       .send({
-        "user": "username",
-        "pass": "password"
+        "user": "tuser",
+        "pass": "tuser",
+        "location": "mspv"
       })
-      .expect(200)
       .expect((res) => {
 
-        const checklistId = res.body.checklistId;
 
-        expect(checklistId).not.toBeNullish();
-        expect(checklistId).not.toBeEmpty();
+        const tasklistId = res.body.tasklistId;
+        expect(res.status).toEqual(200);
+        expect(tasklistId).not.toBeNullish();
+        expect(tasklistId).not.toBeEmpty();
 
       })
       .end(function(err, res) {
         if (err) throw err;
+        return done();
       });
+  });
 
-    done();
+  it("should return 401 for management app login", (done) => {
 
+    request(app)
+      .post("/api/mgmt/login")
+      .send({
+        "user": "tuser",
+        "pass": "wrongpass",
+        "location": "mspv"
+      })
+      .expect((res) => {
+
+
+        const tasklistId = res.body.tasklistId;
+        expect(res.status).toEqual(401);
+
+      })
+      .end(function(err, res) {
+        if (err) throw err;
+        return done();
+      });
   });
 
   it("should return 200 for getting checklist", (done) => {
 
     request(app)
-      .get("/api/mgmt/tasklists/1")
+      .get("/api/mgmt/locations/mspv/tasklist")
       .send()
-      .expect(200)
       .expect((res) => {
 
         const taskId = res.body[0].id;
+
+        expect(res.status).toEqual(200);
 
         expect(taskId).not.toBeNullish();
         expect(taskId).not.toBeEmpty();
@@ -302,17 +325,14 @@ describe("Management App Unit Testing", () => {
       })
       .end(function(err, res) {
         if (err) throw err;
+        return done();
       });
-
-
-    done();
-
   });
 
   it("should return 200 for clearing the checklist", (done) => {
 
     request(app)
-      .put("/api/mgmt/tasklists/1")
+      .put("/api/mgmt/locations/mspv/tasklist")
       .send({action: "clearStatus"})
       .expect(200)
       .expect((res) => {
@@ -328,22 +348,22 @@ describe("Management App Unit Testing", () => {
       })
       .end(function(err, res) {
         if (err) throw err;
+        return done();
       });
-
-
-    done();
 
   });
 
   it("should return 200 for updating checklist item", (done) => {
 
     request(app)
-      .put("/api/mgmt/tasklists/1")
+      .put("/api/mgmt/locations/mspv/tasklist")
       .send({
         action: "updateItem",
         userId: 1,
         itemId: 1,
-        gpsLocation: "123.456, 789.012"
+        gpsLatitude: 123.456,
+        gpsLongitude: -65.2353
+
       })
       .expect(200)
       .expect((res) => {
@@ -353,16 +373,19 @@ describe("Management App Unit Testing", () => {
         expect(item).not.toBeEmpty();
         expect(item.status).toEqual("closed");
         expect(item.timestamp).not.toBeEmpty();
-        expect(item.gpsLocation).not.toBeEmpty();
+        expect(item.gpsLatitude).not.toBeEmpty();
+        expect(item.gpsLongitude).not.toBeEmpty();
         expect(item.completedBy).not.toBeEmpty();
+        expect(item.timestamp).not.toBeNullish();
+        expect(item.gpsLatitude).not.toBeNullish();
+        expect(item.gpsLongitude).not.toBeNullish();
+        expect(item.completedBy).not.toBeNullish();
 
       })
       .end(function(err, res) {
         if (err) throw err;
+        return done();
       });
-
-
-    done();
 
   });
 
