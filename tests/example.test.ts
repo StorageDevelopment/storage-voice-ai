@@ -356,7 +356,7 @@ describe("Management App Unit Testing", () => {
     request(app)
       .put("/api/mgmt/locations/mspv/tasklist")
       .send({
-        action: "updateItem",
+        action: "updateTask",
         userId: 1,
         taskId: 1,
         gpsLatitude: 123.456,

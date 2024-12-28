@@ -31,7 +31,7 @@ const putActions: any = {
     res.send(tasklist);
 
   }),
-  updateItem: asyncHandler(async (req: Request, res: Response) => {
+  updateTask: asyncHandler(async (req: Request, res: Response) => {
     //analyze the tool list and make the appropriate calls to the storage system
     const body = req.body;
     const locationShortName = req.params.locationShortName;
