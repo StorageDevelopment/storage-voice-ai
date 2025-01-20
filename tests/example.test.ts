@@ -387,5 +387,43 @@ describe("Management App Unit Testing", () => {
 
   });
 
+  it("should return 200 for retrieving presigned upload url", (done) => {
+
+    request(app)
+      .put("/api/mgmt/aws/presignedurl/objectkey")
+      .send()
+      .expect(200)
+      .expect((res) => {
+
+        const url = res.body.url;
+        expect(url).not.toBeNullish();
+        expect(url).not.toBeEmpty();
+      })
+      .end(function(err, res) {
+        if (err) throw err;
+        return done();
+      });
+
+  });
+
+  it("should return 200 for retrieving presigned download url", (done) => {
+
+    request(app)
+      .get("/api/mgmt/aws/presignedurl/objectkey")
+      .send()
+      .expect(200)
+      .expect((res) => {
+
+        const url = res.body.url;
+        expect(url).not.toBeNullish();
+        expect(url).not.toBeEmpty();
+      })
+      .end(function(err, res) {
+        if (err) throw err;
+        return done();
+      });
+
+  });
+
 
 });
