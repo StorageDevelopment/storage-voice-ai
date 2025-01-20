@@ -19,8 +19,7 @@ export const generatePresignedUrl = async (bucketName: string, key: string, oper
   const params = {
     Bucket: bucketName,
     Key: key,
-    Expires: expiresIn,
-    ContentType: 'image/*'
+    Expires: expiresIn
   };
 
   const presignedUrl = await s3.getSignedUrl(operation, params);
