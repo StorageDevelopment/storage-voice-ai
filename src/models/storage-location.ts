@@ -1,5 +1,6 @@
 import { User } from "./user";
 import { Task } from "./task";
+import { CleaningReport } from "./cleaning-report";
 
 export class StorageLocation {
 
@@ -8,6 +9,7 @@ export class StorageLocation {
   private shortName: string;
   private users: User[] = [];
   private tasks: Task[] = [];
+  private cleaningReports: CleaningReport[] = [];
 
   constructor(data: any) {
     this.id = data.id ?? -1;
@@ -22,6 +24,12 @@ export class StorageLocation {
     //build the tasks
     for(const task of data.tasks) {
       this.tasks.push(new Task(task));
+    }
+
+    const cleaningReports = data.cleaningReports ?? [];
+
+    for(const cleaningReport of cleaningReports) {
+      this.cleaningReports.push(new CleaningReport(cleaningReport));
     }
     
   }
@@ -47,6 +55,10 @@ export class StorageLocation {
     return this.tasks;
   }
 
+  public getCleaningReports(): CleaningReport[] {
+    return this.cleaningReports
+  }
+
   // Setters
   public setId(id: number): void {
     this.id = id;
@@ -66,5 +78,9 @@ export class StorageLocation {
 
   public setTasks(tasks: Task[]): void {
     this.tasks = tasks;
+  }
+
+  public setCleaningReports(cleaningReports: CleaningReport[]): void {
+    this.cleaningReports = cleaningReports;
   }
 }
