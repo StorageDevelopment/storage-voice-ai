@@ -9,8 +9,8 @@ export class CleaningReport {
   private bugSpray: boolean;
   private rodentSpray: boolean;
   private mouseBait: boolean;
-  private unitPhoto: string;
-  private mouseBaitPhoto: string;
+  private unitPhotoKey: string;
+  private mouseBaitPhotoKey: string;
 
   constructor(data: any) {
     this.id = data.id ?? null;
@@ -23,8 +23,8 @@ export class CleaningReport {
     this.bugSpray = data.bugSpray ?? false;
     this.rodentSpray = data.rodentSpray ?? false;
     this.mouseBait = data.mouseBait ?? false;
-    this.unitPhoto = data.unitPhoto ?? '';
-    this.mouseBaitPhoto = data.mouseBaitPhoto ?? '';
+    this.unitPhotoKey = data.unitPhoto ?? '';
+    this.mouseBaitPhotoKey = data.mouseBaitPhoto ?? '';
   }
 
   // Getters
@@ -68,12 +68,12 @@ export class CleaningReport {
     return this.mouseBait;
   }
 
-  public getUnitPhoto(): string {
-    return this.unitPhoto;
+  public getUnitPhotoKey(): string {
+    return this.unitPhotoKey;
   }
 
-  public getMouseBaitPhoto(): string {
-    return this.mouseBaitPhoto;
+  public getMouseBaitPhotoKey(): string {
+    return this.mouseBaitPhotoKey;
   }
 
   // Setters
@@ -117,11 +117,11 @@ export class CleaningReport {
     this.mouseBait = mouseBait;
   }
 
-  public setUnitPhoto(unitPhoto: string): void {
-    this.unitPhoto = unitPhoto;
+  public setUnitPhotoKey(unitPhoto: string): void {
+    this.unitPhotoKey = unitPhoto;
   }
 
-  public setMouseBaitPhoto(mouseBaitPhoto: string): void {
-    this.mouseBaitPhoto = mouseBaitPhoto;
+  public setMouseBaitPhotoKey(mouseBaitPhoto: string): void {
+    this.mouseBaitPhotoKey = mouseBaitPhoto;
   }
 }
