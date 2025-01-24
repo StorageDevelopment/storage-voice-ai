@@ -23,8 +23,8 @@ export class CleaningReport {
     this.bugSpray = data.bugSpray ?? false;
     this.rodentSpray = data.rodentSpray ?? false;
     this.mouseBait = data.mouseBait ?? false;
-    this.unitPhotoKey = data.unitPhoto ?? '';
-    this.mouseBaitPhotoKey = data.mouseBaitPhoto ?? '';
+    this.unitPhotoKey = data.unitPhotoKey ?? '';
+    this.mouseBaitPhotoKey = data.mouseBaitPhotoKey ?? '';
   }
 
   // Getters
