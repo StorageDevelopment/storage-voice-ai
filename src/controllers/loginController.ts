@@ -25,13 +25,11 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
   if(users.length === 0)
     throw new HttpError("Unauthorized", 401);
   
-  const user = users[0];
-  
-  const responseObject: any = {
-     message: "success",
-     userId: user.getId(),
-    };
+  let user:any = {...users[0]};
 
-  res.send(responseObject);
+  //remove the password
+  delete user.password;
+  
+  res.send(user);
 
 });
