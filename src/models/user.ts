@@ -1,3 +1,5 @@
+import { TimeclockEntry } from "./timeclock-entry";
+
 export class User {
 
   private id: number;
@@ -6,6 +8,7 @@ export class User {
   private email: string;
   private username: string;
   private password: string;
+  private timeclockEntries: TimeclockEntry[] = [];
 
   constructor(data: any) {
     this.id = data.id ?? -1;
@@ -14,6 +17,12 @@ export class User {
     this.email = data.email ?? '';
     this.username = data.username ?? '';
     this.password = data.password ?? '';
+
+    const timeclockEntries = data.timeclockEntries ?? [];
+
+    for (const timeclockEntry of timeclockEntries) {
+      this.timeclockEntries.push(new TimeclockEntry(timeclockEntry));
+    }
   }
 
   // Getters
@@ -41,6 +50,10 @@ export class User {
     return this.password;
   }
 
+  public getTimeclockEntries(): TimeclockEntry[] {
+    return this.timeclockEntries;
+  }
+
   // Setters
   public setId(id: number): void {
     this.id = id;
@@ -64,5 +77,9 @@ export class User {
 
   public setPassword(password: string): void {
     this.password = password;
+  }
+
+  public setTimeclockEntries(timeclockEntries: TimeclockEntry[]): void {
+    this.timeclockEntries = timeclockEntries;
   }
 }
