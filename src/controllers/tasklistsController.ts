@@ -55,7 +55,7 @@ const putActions: any = {
 
     item.setStatus("closed");
     item.setTimestamp( new Date().toISOString() );
-    item.setCompletedBy(`User ${userId}`);
+    item.setCompletedBy(`${userId}`);
     item.setGpsLatitude(gpsLatitude);
     item.setGpsLongitude(gpsLongitude);
 
