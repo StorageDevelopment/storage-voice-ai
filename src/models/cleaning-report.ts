@@ -1,5 +1,6 @@
 export class CleaningReport {
   private id: string | null;
+  private userId: number | null;
   private unit: string;
   private date: string;
   private damageCheck: boolean;
@@ -14,6 +15,7 @@ export class CleaningReport {
 
   constructor(data: any) {
     this.id = data.id ?? null;
+    this.userId = data.userId ?? null;
     this.unit = data.unit ?? '';
     this.date = data.date ?? '';
     this.damageCheck = data.damageCheck ?? false;
@@ -30,6 +32,10 @@ export class CleaningReport {
   // Getters
   public getId(): string | null {
     return this.id;
+  }
+
+  public getUserId(): number | null {
+    return this,this.userId;
   }
 
   public getUnit(): string {
@@ -79,6 +85,10 @@ export class CleaningReport {
   // Setters
   public setId(id: string | null): void {
     this.id = id;
+  }
+
+  public setUserId(id: number | null): void {
+    this.userId = id;
   }
 
   public setUnit(unit: string): void {
