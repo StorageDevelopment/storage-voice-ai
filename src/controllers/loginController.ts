@@ -4,6 +4,7 @@ import { DatastoreFactory } from "../models/datastoreFactory";
 import { StorageLocation } from "../models/storage-location";
 import { User } from "../models/user";
 import { HttpError } from "../http-error";
+import { StorageLocationReduced } from "../models/storage-location-reduced";
 
 export const loginController = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
@@ -29,7 +30,24 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
 
   //remove the password
   delete user.password;
+
+  const storageLocationReduced = new StorageLocationReduced(locationObj);
+
+  //delete the passwords
+  storageLocationReduced.getUsers().forEach(user => {
+
+    let modUser : any = user;
+    delete modUser.password;
+
+    if(user.getUsername() !== username){
+
+      delete modUser.email;
+      delete modUser.username;
+      delete modUser.timeclockEntries;
+
+    }
+  });
   
-  res.send(user);
+  res.send(storageLocationReduced);
 
 });
