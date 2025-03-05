@@ -7,7 +7,7 @@ import { getTimeclockEntries, addTimeclockEntry, clearTimeclockEntry } from "../
 
 const router = Router();
 
-router.post("/locations/:locationShortName/login", loginController);
+router.post("/locations/:corpShortName/:locationShortName/login", loginController);
 router.get("/locations/:locationShortName/tasklist", getTasklistById);
 router.put("/locations/:locationShortName/tasklist", putTasklistsController);
 router.get("/aws/presignedurl/:objectKey", getDownloadPresignedUrl);
