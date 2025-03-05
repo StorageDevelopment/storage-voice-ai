@@ -265,7 +265,7 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for management app login", (done) => {
 
     request(app)
-      .post("/api/mgmt/locations/mspv/login")
+      .post("/api/mgmt/locations/cmau/mspv/login")
       .send({
         "user": "tuser",
         "pass": "tuser"
@@ -288,7 +288,7 @@ describe("Management App Unit Testing", () => {
   it("should return 401 for management app login", (done) => {
 
     request(app)
-      .post("/api/mgmt/locations/mspv/login")
+      .post("/api/mgmt/locations/cmau/mspv/login")
       .send({
         "user": "tuser",
         "pass": "wrongpass"
