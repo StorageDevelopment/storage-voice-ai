@@ -7,8 +7,10 @@ import { CleaningReport } from "../models/cleaning-report";
 
 export const getCleaningReports = asyncHandler(async (req: Request, res: Response) => {
   const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
+
   const datastore = await DatastoreFactory.getDatastore();
-  const key = `ma:storage-location:${locationShortName}`;
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
   const locationObj = await datastore.getJson(key, StorageLocation);
 
   const cleaningReports = locationObj.getCleaningReports();
@@ -21,10 +23,12 @@ export const addCleaningReport = asyncHandler(async (req: Request, res: Response
   //analyze the tool list and make the appropriate calls to the storage system
   const cleaningReport = req.body;
   const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
+
   const newCleaningReport = new CleaningReport(cleaningReport);
 
   const datastore = await DatastoreFactory.getDatastore();
-  const key = `ma:storage-location:${locationShortName}`;
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
   const locationObj = await datastore.getJson(key, StorageLocation);
 
   const cleaningReports = locationObj.getCleaningReports();

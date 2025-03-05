@@ -10,9 +10,10 @@ const putActions: any = {
     const body = req.body;
     const action = body.action;
     const locationShortName = req.params.locationShortName;
+    const corpShortName = req.params.corpShortName;
 
     const datastore = await DatastoreFactory.getDatastore();
-    const key = `ma:storage-location:${locationShortName}`;
+    const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
     const locationObj = await datastore.getJson(key, StorageLocation);
 
     const tasklist = locationObj.getTasks();
@@ -35,6 +36,7 @@ const putActions: any = {
     //analyze the tool list and make the appropriate calls to the storage system
     const body = req.body;
     const locationShortName = req.params.locationShortName;
+    const corpShortName = req.params.corpShortName;
     const taskId = body.taskId;
     const userId = body.userId;
     const gpsLatitude = body.gpsLatitude;
@@ -42,7 +44,7 @@ const putActions: any = {
 
 
     const datastore = await DatastoreFactory.getDatastore();
-    const key = `ma:storage-location:${locationShortName}`;
+    const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
     const locationObj = await datastore.getJson(key, StorageLocation);
 
     const tasklist = locationObj.getTasks();
@@ -69,9 +71,10 @@ export const getTasklistById = asyncHandler(async (req: Request, res: Response) 
   //analyze the tool list and make the appropriate calls to the storage system
   const body = req.body;
   const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
 
   const datastore = await DatastoreFactory.getDatastore();
-  const key = `ma:storage-location:${locationShortName}`;
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
   const locationObj = await datastore.getJson(key, StorageLocation);
 
   res.send(locationObj.getTasks());

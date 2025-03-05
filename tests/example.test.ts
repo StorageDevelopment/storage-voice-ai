@@ -309,7 +309,7 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for getting checklist", (done) => {
 
     request(app)
-      .get("/api/mgmt/locations/mspv/tasklist")
+      .get("/api/mgmt/locations/cmau/mspv/tasklist")
       .send()
       .expect((res) => {
 
@@ -330,7 +330,7 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for clearing the checklist", (done) => {
 
     request(app)
-      .put("/api/mgmt/locations/mspv/tasklist")
+      .put("/api/mgmt/locations/cmau/mspv/tasklist")
       .send({action: "clearStatus"})
       .expect(200)
       .expect((res) => {
@@ -354,7 +354,7 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for updating checklist item", (done) => {
 
     request(app)
-      .put("/api/mgmt/locations/mspv/tasklist")
+      .put("/api/mgmt/locations/cmau/mspv/tasklist")
       .send({
         action: "updateTask",
         userId: 1,

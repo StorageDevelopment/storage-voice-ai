@@ -8,9 +8,10 @@ import { TimeclockEntry } from "../models/timeclock-entry";
 
 export const getTimeclockEntries = asyncHandler(async (req: Request, res: Response) => {
   const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
   const userId = parseInt(req.params.userId);
   const datastore = await DatastoreFactory.getDatastore();
-  const key = `ma:storage-location:${locationShortName}`;
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
   const locationObj = await datastore.getJson(key, StorageLocation);
 
   const users = locationObj.getUsers();
@@ -28,11 +29,12 @@ export const addTimeclockEntry = asyncHandler(async (req: Request, res: Response
   //analyze the tool list and make the appropriate calls to the storage system
   const timeclockEntry = req.body;
   const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
   const userId = parseInt(req.params.userId);
   const newTimeclockEntry = new TimeclockEntry(timeclockEntry);
 
   const datastore = await DatastoreFactory.getDatastore();
-  const key = `ma:storage-location:${locationShortName}`;
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
   const locationObj = await datastore.getJson(key, StorageLocation);
 
   const users = locationObj.getUsers();
@@ -62,11 +64,12 @@ export const addTimeclockEntry = asyncHandler(async (req: Request, res: Response
 export const clearTimeclockEntry = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
   const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
   const userId = parseInt(req.params.userId);
   const timeclockEntryId = req.params.timeclockEntryId;
 
   const datastore = await DatastoreFactory.getDatastore();
-  const key = `ma:storage-location:${locationShortName}`;
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
   const locationObj = await datastore.getJson(key, StorageLocation);
 
   const users = locationObj.getUsers();
