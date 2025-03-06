@@ -265,10 +265,10 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for management app login", (done) => {
 
     request(app)
-      .post("/api/mgmt/locations/cmau/mspv/login")
+      .post("/api/mgmt/locations/cmay/mspy/login")
       .send({
-        "user": "tuser",
-        "pass": "tuser"
+        "user": "jp",
+        "pass": "jp"
       })
       .expect((res) => {
 
@@ -288,9 +288,9 @@ describe("Management App Unit Testing", () => {
   it("should return 401 for management app login", (done) => {
 
     request(app)
-      .post("/api/mgmt/locations/cmau/mspv/login")
+      .post("/api/mgmt/locations/cmay/mspy/login")
       .send({
-        "user": "tuser",
+        "user": "ep",
         "pass": "wrongpass"
       })
       .expect((res) => {
@@ -309,7 +309,7 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for getting checklist", (done) => {
 
     request(app)
-      .get("/api/mgmt/locations/cmau/mspv/tasklist")
+      .get("/api/mgmt/locations/cmay/mspy/tasklist")
       .send()
       .expect((res) => {
 
@@ -330,7 +330,7 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for clearing the checklist", (done) => {
 
     request(app)
-      .put("/api/mgmt/locations/cmau/mspv/tasklist")
+      .put("/api/mgmt/locations/cmay/mspy/tasklist")
       .send({action: "clearStatus"})
       .expect(200)
       .expect((res) => {
@@ -354,11 +354,11 @@ describe("Management App Unit Testing", () => {
   it("should return 200 for updating checklist item", (done) => {
 
     request(app)
-      .put("/api/mgmt/locations/cmau/mspv/tasklist")
+      .put("/api/mgmt/locations/cmay/mspy/tasklist")
       .send({
         action: "updateTask",
         userId: 1,
-        taskId: 1,
+        taskId: 0,
         gpsLatitude: 123.456,
         gpsLongitude: -65.2353
 
@@ -366,7 +366,7 @@ describe("Management App Unit Testing", () => {
       .expect(200)
       .expect((res) => {
 
-        const item = res.body.filter((item: any) => item.id === 1)[0];
+        const item = res.body.filter((item: any) => item.id === 0)[0];
         expect(item).not.toBeNullish();
         expect(item).not.toBeEmpty();
         expect(item.status).toEqual("closed");
