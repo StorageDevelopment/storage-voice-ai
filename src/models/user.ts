@@ -1,7 +1,6 @@
 import { TimeclockEntry } from "./timeclock-entry";
 
 export class User {
-
   private id: number;
   private firstName: string;
   private lastName: string;
@@ -12,11 +11,11 @@ export class User {
 
   constructor(data: any) {
     this.id = data.id ?? -1;
-    this.firstName = data.firstName ?? '';
-    this.lastName = data.lastName ?? '';
-    this.email = data.email ?? '';
-    this.username = data.username ?? '';
-    this.password = data.password ?? '';
+    this.firstName = data.firstName ?? "";
+    this.lastName = data.lastName ?? "";
+    this.email = data.email ?? "";
+    this.username = data.username ?? "";
+    this.password = data.password ?? "";
 
     const timeclockEntries = data.timeclockEntries ?? [];
 
@@ -81,5 +80,9 @@ export class User {
 
   public setTimeclockEntries(timeclockEntries: TimeclockEntry[]): void {
     this.timeclockEntries = timeclockEntries;
+  }
+
+  public resetUserTimeclockEntries(): void {
+    this.timeclockEntries = [];
   }
 }

@@ -3,7 +3,6 @@ import { Task } from "./task";
 import { CleaningReport } from "./cleaning-report";
 
 export class StorageLocation {
-
   private id: number;
   private name: string;
   private shortName: string;
@@ -14,26 +13,25 @@ export class StorageLocation {
 
   constructor(data: any) {
     this.id = data.id ?? -1;
-    this.name = data.name ?? '';
-    this.shortName = data.shortName ?? '';
-    this.corpShortName = data.corpShortName ?? '';
+    this.name = data.name ?? "";
+    this.shortName = data.shortName ?? "";
+    this.corpShortName = data.corpShortName ?? "";
 
     //build the users
-    for(const user of data.users) {
+    for (const user of data.users) {
       this.users.push(new User(user));
     }
 
     //build the tasks
-    for(const task of data.tasks) {
+    for (const task of data.tasks) {
       this.tasks.push(new Task(task));
     }
 
     const cleaningReports = data.cleaningReports ?? [];
 
-    for(const cleaningReport of cleaningReports) {
+    for (const cleaningReport of cleaningReports) {
       this.cleaningReports.push(new CleaningReport(cleaningReport));
     }
-    
   }
 
   // Getters
@@ -62,7 +60,7 @@ export class StorageLocation {
   }
 
   public getCleaningReports(): CleaningReport[] {
-    return this.cleaningReports
+    return this.cleaningReports;
   }
 
   // Setters
@@ -92,5 +90,27 @@ export class StorageLocation {
 
   public setCleaningReports(cleaningReports: CleaningReport[]): void {
     this.cleaningReports = cleaningReports;
+  }
+
+  public resetCurrentDay(): void {
+    this.resetUsersCleaningReports();
+    this.resetUsersTasks();
+    this.resetUsersTimeclockEntries();
+  }
+
+  private resetUsersTimeclockEntries(): void {
+    this.users.forEach((user, idx) => {
+      user.resetUserTimeclockEntries();
+    });
+  }
+
+  private resetUsersTasks(): void {
+    this.tasks.forEach((task, idx) => {
+      task.resetUserTask();
+    });
+  }
+
+  private resetUsersCleaningReports(): void {
+    this.cleaningReports = [];
   }
 }

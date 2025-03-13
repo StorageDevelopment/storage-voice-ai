@@ -1,5 +1,4 @@
 export class Task {
-
   private id: number;
   private orderIdx: number;
   private name: string;
@@ -94,5 +93,13 @@ export class Task {
 
   public setGpsLongitude(gpsLongitude: number | null): void {
     this.gpsLongitude = gpsLongitude;
+  }
+
+  public resetUserTask(): void {
+    this.status = "open";
+    this.timestamp = null;
+    this.completedBy = null;
+    this.gpsLatitude = null;
+    this.gpsLongitude = null;
   }
 }
