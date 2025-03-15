@@ -8,11 +8,13 @@ export const clearDay = asyncHandler(async (req: Request, res: Response) => {
   const corpShortName = req.params.corpShortName;
   const locationShortName = req.params.locationShortName;
 
+  //Check checklist if complete, if not complete then send email to:
+  //Archive checklist by
+
   const datastore = await DatastoreFactory.getDatastore();
   const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName}`;
   const storageLocation = await datastore.getJson(key, StorageLocation);
   storageLocation.resetCurrentDay();
-  console.log(storageLocation);
   await datastore.setJson(key, storageLocation);
 
   res.send(`Success ${storageLocation}`);

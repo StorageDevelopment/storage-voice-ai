@@ -1,6 +1,7 @@
 import { User } from "./user";
 import { Task } from "./task";
 import { CleaningReport } from "./cleaning-report";
+import { TaskReport } from "./task-report";
 
 export class StorageLocation {
   private id: number;
@@ -9,6 +10,8 @@ export class StorageLocation {
   private corpShortName: string;
   private users: User[] = [];
   private tasks: Task[] = [];
+  private taskReports: TaskReport[] = [];
+
   private cleaningReports: CleaningReport[] = [];
 
   constructor(data: any) {
@@ -16,6 +19,13 @@ export class StorageLocation {
     this.name = data.name ?? "";
     this.shortName = data.shortName ?? "";
     this.corpShortName = data.corpShortName ?? "";
+
+    //build task archive
+    if (data.taskReports) {
+      for (const taskReports of data.taskReports) {
+        this.taskReports.push(new TaskReport(taskReports));
+      }
+    }
 
     //build the users
     for (const user of data.users) {
@@ -92,11 +102,30 @@ export class StorageLocation {
     this.cleaningReports = cleaningReports;
   }
 
-  public resetCurrentDay(): void {
-    this.resetUsersCleaningReports();
-    this.resetUsersTasks();
-    this.resetUsersTimeclockEntries();
+  public validateCurrentDay(tasks: Task[]): boolean {
+    let isValid = true;
+    tasks.forEach((task) => {
+      console.log("Validating:", task.getStatus());
+      isValid = isValid && Boolean(task.getStatus() === "closed");
+    });
+    console.log("current day", isValid);
+    return isValid;
   }
+
+  public resetCurrentDay(): void {
+    //this.resetUsersCleaningReports();
+    if (this.validateCurrentDay(this.tasks)) {
+      console.log("Is a valid current days");
+    } else {
+      console.log("Is NOT a valid current day");
+    }
+
+    //this.archiveCurrentDay();
+    this.resetUsersTasks();
+    //this.resetUsersTimeclockEntries();
+  }
+
+  public archiveCurrentDay(): void {}
 
   private resetUsersTimeclockEntries(): void {
     this.users.forEach((user, idx) => {
