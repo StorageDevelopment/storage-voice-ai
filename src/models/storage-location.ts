@@ -116,13 +116,22 @@ export class StorageLocation {
     //this.resetUsersCleaningReports();
     if (this.validateCurrentDay(this.tasks)) {
       console.log("Is a valid current days");
+      // The day is valid to archive
+      let date = Date.now();
+      let taskId = `task-${date}`;
+
+      let taskReport = new TaskReport({
+        id: taskId,
+        date: date,
+        tasks: this.tasks,
+      });
+      console.log("taskReport", taskReport);
+      this.taskReports.push(taskReport);
+      this.resetUsersTasks();
     } else {
       console.log("Is NOT a valid current day");
+      // We should email someone that the day is not valid
     }
-
-    //this.archiveCurrentDay();
-    this.resetUsersTasks();
-    //this.resetUsersTimeclockEntries();
   }
 
   public archiveCurrentDay(): void {}
