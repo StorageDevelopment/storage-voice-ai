@@ -53,3 +53,38 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
   res.send(storageLocationReduced);
 
 });
+
+export const updateCredsController = asyncHandler(async (req: Request, res: Response) => {
+  //analyze the tool list and make the appropriate calls to the storage system
+  const body = req.body;
+  const username = body.user;
+  const newPass = body.newPass;
+  const oldPass = body.oldPass;
+  const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
+
+  //get the datastore
+  const datastore = await DatastoreFactory.getDatastore();
+
+  //get the user
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+  const locationObj = await datastore.getJson(key, StorageLocation);
+
+  //check if the user exists
+  const users : User[] = locationObj.getUsers().filter((user) => user.getUsername() === username && user.getPassword() === oldPass);
+
+  if(users.length === 0)
+    throw new HttpError("Unauthorized", 401);
+  
+  let user:any = users[0];
+
+  //update the password
+  user.password = newPass;
+  user.requiresPasswordChange = false;
+
+  //resave the object
+  await datastore.setJson(key, locationObj);
+  
+  res.sendStatus(200);
+
+});

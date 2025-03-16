@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginController } from "../controllers/loginController";
+import { loginController, updateCredsController } from "../controllers/loginController";
 import { getTasklistById, putTasklistsController } from "../controllers/tasklistsController";
 import { getDownloadPresignedUrl, getUploadPresignedUrl } from "../controllers/awsController";
 import { addCleaningReport, getCleaningReports } from "../controllers/cleaningController";
@@ -8,6 +8,7 @@ import { getTimeclockEntries, addTimeclockEntry, clearTimeclockEntry } from "../
 const router = Router();
 
 router.post("/locations/:corpShortName/:locationShortName/login", loginController);
+router.post("/locations/:corpShortName/:locationShortName/updatecreds", updateCredsController);
 router.get("/locations/:corpShortName/:locationShortName/tasklist", getTasklistById);
 router.put("/locations/:corpShortName/:locationShortName/tasklist", putTasklistsController);
 router.get("/aws/presignedurl/:objectKey", getDownloadPresignedUrl);
