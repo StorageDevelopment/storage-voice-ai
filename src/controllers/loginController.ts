@@ -45,6 +45,7 @@ export const loginController = asyncHandler(async (req: Request, res: Response) 
       delete modUser.email;
       delete modUser.username;
       delete modUser.timeclockEntries;
+      delete modUser.requiresPasswordChange;
 
     }
   });

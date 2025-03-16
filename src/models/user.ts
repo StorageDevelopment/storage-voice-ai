@@ -1,7 +1,6 @@
 import { TimeclockEntry } from "./timeclock-entry";
 
 export class User {
-
   private id: number;
   private firstName: string;
   private lastName: string;
@@ -9,14 +8,16 @@ export class User {
   private username: string;
   private password: string;
   private timeclockEntries: TimeclockEntry[] = [];
+  private requiresPasswordChange: boolean;
 
   constructor(data: any) {
     this.id = data.id ?? -1;
-    this.firstName = data.firstName ?? '';
-    this.lastName = data.lastName ?? '';
-    this.email = data.email ?? '';
-    this.username = data.username ?? '';
-    this.password = data.password ?? '';
+    this.firstName = data.firstName ?? "";
+    this.lastName = data.lastName ?? "";
+    this.email = data.email ?? "";
+    this.username = data.username ?? "";
+    this.password = data.password ?? "";
+    this.requiresPasswordChange = data.requiresPasswordChange ?? false;
 
     const timeclockEntries = data.timeclockEntries ?? [];
 
@@ -54,6 +55,10 @@ export class User {
     return this.timeclockEntries;
   }
 
+  public getRequiresPasswordChange(): boolean {
+    return this.requiresPasswordChange;
+  }
+
   // Setters
   public setId(id: number): void {
     this.id = id;
@@ -81,5 +86,13 @@ export class User {
 
   public setTimeclockEntries(timeclockEntries: TimeclockEntry[]): void {
     this.timeclockEntries = timeclockEntries;
+  }
+
+  public setRequiresPasswordChange(requiresPasswordChange: boolean): void {
+    this.requiresPasswordChange = requiresPasswordChange;
+  }
+
+  public resetUserTimeclockEntries(): void {
+    this.timeclockEntries = [];
   }
 }
