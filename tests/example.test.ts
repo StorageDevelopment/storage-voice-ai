@@ -268,7 +268,7 @@ describe("Management App Unit Testing", () => {
       .post("/api/mgmt/locations/cmay/mspy/login")
       .send({
         "user": "jp",
-        "pass": "jp"
+        "pass": "9732c83e3e03fffde2ee65a9d826df8c4dd623c27fb92b952fe62a02f0726f87"
       })
       .expect((res) => {
 
