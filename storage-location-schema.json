@@ -1,0 +1,90 @@
+{
+  "users": [
+    {
+      "timeclockEntries": [],
+      "id": 1,
+      "firstName": "Alan",
+      "lastName": "Purugganan",
+      "email": "apurugganan@email.com",
+      "username": "jp",
+      "password": "jp"
+    },
+    {
+      "timeclockEntries": [],
+      "id": 2,
+      "firstName": "Eberjan",
+      "lastName": "Purugganan",
+      "email": "epurugganan@email.com",
+      "username": "ep",
+      "password": "ep"
+    },
+    {
+      "timeclockEntries": [],
+      "id": 3,
+      "firstName": "Test",
+      "lastName": "User",
+      "email": "tuser@email.com",
+      "username": "tuser",
+      "password": "tuser"
+    },
+    {
+      "timeclockEntries": [],
+      "id": 4,
+      "firstName": "Michael",
+      "lastName": "Scimeca",
+      "email": "mscimeca@email.com",
+      "username": "mscimeca",
+      "password": "mscimeca"
+    },
+    {
+      "timeclockEntries": [],
+      "id": 4,
+      "firstName": "Andrew",
+      "lastName": "Scimeca",
+      "email": "ascimeca@email.com",
+      "username": "ascimeca",
+      "password": "ascimeca"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 0,
+      "orderIdx": 0,
+      "name": "Take out the garbage",
+      "description": "Make the facility look clean",
+      "status": "closed",
+      "timestamp": null,
+      "completedBy": null,
+      "gpsLatitude": null,
+      "gpsLongitude": null
+    },
+    {
+      "id": 1,
+      "orderIdx": 1,
+      "name": "Turn off the lights",
+      "description": "Save electricity",
+      "status": "open",
+      "timestamp": null,
+      "completedBy": null,
+      "gpsLatitude": null,
+      "gpsLongitude": null
+    },
+    {
+      "id": 2,
+      "orderIdx": 2,
+      "name": "Close till",
+      "description": "Count the money",
+      "status": "open",
+      "timestamp": null,
+      "completedBy": null,
+      "gpsLatitude": null,
+      "gpsLongitude": null
+    }
+  ],
+  "taskReports": [],
+  "cleaningReports": [],
+  "id": 1,
+  "name": "My Storage Prescott Valley",
+  "shortName": "mspv",
+  "corpShortName": "cmau"
+}
