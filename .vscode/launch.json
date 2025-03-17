@@ -10,11 +10,6 @@
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ],
-            "env": {
-                "NODE_ENV": "development",
-                "DB_TYPE": "redis",
-                "DB_CONN_STR": "rediss://red-ctko46dds78s73c1c350:m6b6H7v1xpXWNRcvzWtfc8PxYssIvG7X@oregon-redis.render.com:6379"
-            },
             "skipFiles": [
                 "<node_internals>/**"
             ]
@@ -35,11 +30,6 @@
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "env": {
-                "NODE_ENV": "development",
-                "DB_TYPE": "redis",
-                "DB_CONN_STR": "rediss://red-ctko46dds78s73c1c350:m6b6H7v1xpXWNRcvzWtfc8PxYssIvG7X@oregon-redis.render.com:6379"
-            },
             "skipFiles": [
                 "<node_internals>/**"
             ]
