@@ -138,11 +138,16 @@ export class StorageLocation {
       });
       console.log("taskReport", taskReport);
       this.taskReports.push(taskReport);
-      this.resetUsersTasks();
+      this.resetTasks();
     } else {
       console.log("Is NOT a valid current day");
       // We should email someone that the day is not valid
     }
+  }
+
+  public closeDay(): void {
+    this.archiveTasks();
+    this.resetTasks();
   }
 
   public archiveTasks(): void {
@@ -172,9 +177,9 @@ export class StorageLocation {
     });
   }
 
-  private resetUsersTasks(): void {
+  private resetTasks(): void {
     this.tasks.forEach((task, idx) => {
-      task.resetUserTask();
+      task.reset();
     });
   }
 

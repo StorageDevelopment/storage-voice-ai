@@ -95,7 +95,7 @@ export class Task {
     this.gpsLongitude = gpsLongitude;
   }
 
-  public resetUserTask(): void {
+  public reset(): void {
     this.status = "open";
     this.timestamp = null;
     this.completedBy = null;
