@@ -5,13 +5,13 @@ import { TaskReport } from "./task-report";
 
 export class StorageLocation {
   private id: number;
+  private timezone: string;
   private name: string;
   private shortName: string;
   private corpShortName: string;
   private users: User[] = [];
   private tasks: Task[] = [];
   private taskReports: TaskReport[] = [];
-
   private cleaningReports: CleaningReport[] = [];
 
   constructor(data: any) {
@@ -19,6 +19,7 @@ export class StorageLocation {
     this.name = data.name ?? "";
     this.shortName = data.shortName ?? "";
     this.corpShortName = data.corpShortName ?? "";
+    this.timezone = data.timezone ?? "America/New_York";
 
     //build task archive
     if (data.taskReports) {
@@ -73,6 +74,10 @@ export class StorageLocation {
     return this.cleaningReports;
   }
 
+  public getTimezone(): string {
+    return this.timezone;
+  }
+
   // Setters
   public setId(id: number): void {
     this.id = id;
@@ -100,6 +105,10 @@ export class StorageLocation {
 
   public setCleaningReports(cleaningReports: CleaningReport[]): void {
     this.cleaningReports = cleaningReports;
+  }
+
+  public setTimezone(timezone: string): void {
+    this.timezone = timezone;
   }
 
   public validateCurrentDay(tasks: Task[]): boolean {
