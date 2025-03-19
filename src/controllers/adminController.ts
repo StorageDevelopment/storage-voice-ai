@@ -14,7 +14,7 @@ export const clearDay = asyncHandler(async (req: Request, res: Response) => {
   const datastore = await DatastoreFactory.getDatastore();
   const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName}`;
   const storageLocation = await datastore.getJson(key, StorageLocation);
-  storageLocation.resetCurrentDay();
+  storageLocation.archiveTasks();
   await datastore.setJson(key, storageLocation);
 
   res.send(`Success ${storageLocation}`);

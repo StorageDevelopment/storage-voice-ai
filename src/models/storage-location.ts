@@ -2,6 +2,8 @@ import { User } from "./user";
 import { Task } from "./task";
 import { CleaningReport } from "./cleaning-report";
 import { TaskReport } from "./task-report";
+import { generateUniqueInteger } from "../utils";
+import { formatInTimeZone } from "date-fns-tz";
 
 export class StorageLocation {
   private id: number;
@@ -126,11 +128,11 @@ export class StorageLocation {
     if (this.validateCurrentDay(this.tasks)) {
       console.log("Is a valid current days");
       // The day is valid to archive
-      let date = Date.now();
-      let taskId = `task-${date}`;
+      let date = new Date().toISOString();
+      let reportId = generateUniqueInteger();
 
       let taskReport = new TaskReport({
-        id: taskId,
+        id: reportId.toString(),
         date: date,
         tasks: this.tasks,
       });
@@ -141,6 +143,25 @@ export class StorageLocation {
       console.log("Is NOT a valid current day");
       // We should email someone that the day is not valid
     }
+  }
+
+  public archiveTasks(): void {
+
+      // Get today in UTC
+      let dateStr = new Date().toISOString();
+
+      const localTime = formatInTimeZone(new Date(dateStr), this.timezone, 'yyyy-MM-dd HH:mm:ss');
+      const nycTime = formatInTimeZone(new Date(dateStr), 'America/New_York', 'yyyy-MM-dd HH:mm:ss');
+
+      let reportId = generateUniqueInteger();
+
+      let taskReport = new TaskReport({
+        id: reportId.toString(),
+        date: dateStr,
+        tasks: this.tasks,
+      });
+      
+      this.taskReports.push(taskReport);
   }
 
   public archiveCurrentDay(): void {}
