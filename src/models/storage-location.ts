@@ -76,6 +76,10 @@ export class StorageLocation {
     return this.cleaningReports;
   }
 
+  public getTaskReports(): TaskReport[] {
+    return this.taskReports;
+  }
+
   public getTimezone(): string {
     return this.timezone;
   }

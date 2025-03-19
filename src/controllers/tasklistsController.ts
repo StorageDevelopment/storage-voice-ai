@@ -95,3 +95,16 @@ export const putTasklistsController = asyncHandler(async (req: Request, res: Res
 
   actionFunction(req, res);
 });
+
+export const getTaskReports = asyncHandler(async (req: Request, res: Response) => {
+  const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
+
+  const datastore = await DatastoreFactory.getDatastore();
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+  const locationObj = await datastore.getJson(key, StorageLocation);
+
+  const taskReports = locationObj.getTaskReports();
+  
+  res.send(taskReports);
+});

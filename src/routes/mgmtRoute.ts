@@ -6,6 +6,7 @@ import {
 import {
     getTasklistById,
     putTasklistsController,
+    getTaskReports
 } from "../controllers/tasklistsController";
 import {
     getDownloadPresignedUrl,
@@ -35,6 +36,10 @@ router.post("/locations/:corpShortName/:locationShortName/updatecreds", updateCr
 router.get(
     "/locations/:corpShortName/:locationShortName/tasklist",
     getTasklistById
+);
+router.get(
+    "/locations/:corpShortName/:locationShortName/taskreports",
+    getTaskReports
 );
 router.put(
     "/locations/:corpShortName/:locationShortName/tasklist",
