@@ -3,6 +3,7 @@ import { User } from "./user";
 export class StorageLocationReduced {
 
   private id: number;
+  private timezone: string;
   private name: string;
   private shortName: string;
   private corpShortName: string;
@@ -13,6 +14,7 @@ export class StorageLocationReduced {
     this.name = data.name ?? '';
     this.shortName = data.shortName ?? '';
     this.corpShortName = data.corpShortName ?? '';
+    this.timezone = data.timezone ?? 'America/New_York';
 
     //build the users
     for(const user of data.users) {
@@ -41,6 +43,10 @@ export class StorageLocationReduced {
   public getUsers(): User[] {
     return this.users;
   }
+
+  public getTimezone(): string {
+    return this.timezone;
+  }
   
   // Setters
   public setId(id: number): void {
@@ -61,5 +67,9 @@ export class StorageLocationReduced {
 
   public setUsers(users: User[]): void {
     this.users = users;
+  }
+
+  public setTimezone(timezone: string): void {
+    this.timezone = timezone;
   }
 }
