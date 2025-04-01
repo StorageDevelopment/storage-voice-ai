@@ -14,6 +14,7 @@ export class StorageLocation {
   private users: User[] = [];
   private tasks: Task[] = [];
   private taskReports: TaskReport[] = [];
+  private taskReport: TaskReport;
   private cleaningReports: CleaningReport[] = [];
 
   constructor(data: any) {
@@ -22,6 +23,7 @@ export class StorageLocation {
     this.shortName = data.shortName ?? "";
     this.corpShortName = data.corpShortName ?? "";
     this.timezone = data.timezone ?? "America/New_York";
+    this.taskReport = new TaskReport(data.taskReport ?? {});
 
     //build task archive
     if (data.taskReports) {
