@@ -82,6 +82,10 @@ export class StorageLocation {
     return this.taskReports;
   }
 
+  public getTaskReport(): TaskReport {
+    return this.taskReport;
+  }
+
   public getTimezone(): string {
     return this.timezone;
   }
@@ -117,6 +121,10 @@ export class StorageLocation {
 
   public setTimezone(timezone: string): void {
     this.timezone = timezone;
+  }
+
+  public setTaskReport(report: TaskReport): void {
+    this.taskReport = report;
   }
 
   public validateCurrentDay(tasks: Task[]): boolean {

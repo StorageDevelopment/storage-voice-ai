@@ -77,7 +77,7 @@ export const getTasklistById = asyncHandler(async (req: Request, res: Response) 
   const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
   const locationObj = await datastore.getJson(key, StorageLocation);
 
-  res.send(locationObj.getTasks());
+  res.send(locationObj.getTaskReport());
 });
 
 export const putTasklistsController = asyncHandler(async (req: Request, res: Response) => {
