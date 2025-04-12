@@ -64,6 +64,25 @@ const putActions: any = {
     await datastore.setJson(key, locationObj);
 
     res.send(tasklist);
+  }),
+  updateComment: asyncHandler(async (req: Request, res: Response) => {
+    //analyze the tool list and make the appropriate calls to the storage system
+    const body = req.body;
+    const locationShortName = req.params.locationShortName;
+    const corpShortName = req.params.corpShortName;
+    const comment = body.comment;
+    
+    const datastore = await DatastoreFactory.getDatastore();
+    const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+    const locationObj = await datastore.getJson(key, StorageLocation);
+
+    const taskReport = locationObj.getTaskReport();
+
+    taskReport.setComment(comment);
+        
+    await datastore.setJson(key, locationObj);
+
+    res.send(taskReport);
   })
 };
 
