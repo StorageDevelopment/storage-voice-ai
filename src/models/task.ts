@@ -8,6 +8,7 @@ export class Task {
   private completedBy: string | null;
   private gpsLatitude: number | null;
   private gpsLongitude: number | null;
+  private comment: string;
 
   constructor(data: any) {
     this.id = data.id;
@@ -19,6 +20,7 @@ export class Task {
     this.completedBy = data.completedBy;
     this.gpsLatitude = data.gpsLatitude;
     this.gpsLongitude = data.gpsLongitude;
+    this.comment = data.comment || ""; // Default to empty
   }
 
   // Getters
@@ -58,6 +60,10 @@ export class Task {
     return this.gpsLongitude;
   }
 
+  public getComment(): string {
+    return this.comment;
+  }
+
   // Setters
   public setId(id: number): void {
     this.id = id;
@@ -95,11 +101,16 @@ export class Task {
     this.gpsLongitude = gpsLongitude;
   }
 
+  public setComment(s: string): void {
+    this.comment = s;
+  }
+
   public reset(): void {
     this.status = "open";
     this.timestamp = null;
     this.completedBy = null;
     this.gpsLatitude = null;
     this.gpsLongitude = null;
+    this.comment = ""; // Reset comment to empty string
   }
 }
