@@ -16,7 +16,8 @@ const putActions: any = {
     const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
     const locationObj = await datastore.getJson(key, StorageLocation);
 
-    const tasklist = locationObj.getTasks();
+    const taskReport = locationObj.getTaskReport();
+    const tasklist = taskReport.getTasks();
 
     for (let task of tasklist) {
       task.setStatus("open");
@@ -24,12 +25,13 @@ const putActions: any = {
       task.setCompletedBy(null);
       task.setGpsLatitude(null);
       task.setGpsLongitude(null);
+      task.setComment("");
     }
 
     //resave the object
     await datastore.setJson(key, locationObj);
 
-    res.send(tasklist);
+    res.send(taskReport);
 
   }),
   updateTask: asyncHandler(async (req: Request, res: Response) => {
@@ -47,8 +49,9 @@ const putActions: any = {
     const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
     const locationObj = await datastore.getJson(key, StorageLocation);
 
-    const tasklist = locationObj.getTasks();
-
+    const taskReport = locationObj.getTaskReport();
+    const tasklist = taskReport.getTasks();
+    
     //validate the itemId
     if (taskId < 0 || taskId >= tasklist.length)
       throw new HttpError("Item not found", 404);
@@ -63,7 +66,33 @@ const putActions: any = {
 
     await datastore.setJson(key, locationObj);
 
-    res.send(tasklist);
+    res.send(taskReport);
+  }),
+  updateTaskComment: asyncHandler(async (req: Request, res: Response) => {
+    //analyze the tool list and make the appropriate calls to the storage system
+    const body = req.body;
+    const locationShortName = req.params.locationShortName;
+    const corpShortName = req.params.corpShortName;
+    const taskId = body.taskId;
+    
+    const datastore = await DatastoreFactory.getDatastore();
+    const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+    const locationObj = await datastore.getJson(key, StorageLocation);
+
+    const taskReport = locationObj.getTaskReport();
+    const tasklist = taskReport.getTasks();
+
+    //validate the itemId
+    if (taskId < 0 || taskId >= tasklist.length)
+      throw new HttpError("Item not found", 404);
+    
+    const item = tasklist[taskId];
+
+    item.setComment(body.comment);
+    
+    await datastore.setJson(key, locationObj);
+
+    res.send(taskReport);
   }),
   updateComment: asyncHandler(async (req: Request, res: Response) => {
     //analyze the tool list and make the appropriate calls to the storage system

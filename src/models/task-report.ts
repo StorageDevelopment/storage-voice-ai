@@ -46,4 +46,9 @@ export class TaskReport {
   public setComment(comment: string): void {
     this.comment = comment; // Setter for comment
   }
+
+  public reset(): void {
+    this.tasks.forEach((task) => task.reset());
+    this.comment = ''; // Reset comment
+  }
 }

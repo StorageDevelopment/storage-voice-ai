@@ -152,7 +152,7 @@ export class StorageLocation {
       });
       console.log("taskReport", taskReport);
       this.taskReports.push(taskReport);
-      this.resetTasks();
+      //this.resetTasks();
     } else {
       console.log("Is NOT a valid current day");
       // We should email someone that the day is not valid
@@ -160,24 +160,22 @@ export class StorageLocation {
   }
 
   public closeDay(): void {
-    this.archiveTasks();
-    this.resetTasks();
+    this.archiveTaskReport();
+    this.taskReport.reset();
   }
 
-  public archiveTasks(): void {
+  public archiveTaskReport(): void {
 
       // Get today in UTC
       let dateStr = new Date().toISOString();
-
-      const localTime = formatInTimeZone(new Date(dateStr), this.timezone, 'yyyy-MM-dd HH:mm:ss');
-      const nycTime = formatInTimeZone(new Date(dateStr), 'America/New_York', 'yyyy-MM-dd HH:mm:ss');
 
       let reportId = generateUniqueInteger();
 
       let taskReport = new TaskReport({
         id: reportId.toString(),
         date: dateStr,
-        tasks: this.tasks,
+        tasks: this.taskReport.getTasks(),
+        comment: this.taskReport.getComment(),
       });
       
       this.taskReports.push(taskReport);
@@ -188,12 +186,6 @@ export class StorageLocation {
   private resetUsersTimeclockEntries(): void {
     this.users.forEach((user, idx) => {
       user.resetUserTimeclockEntries();
-    });
-  }
-
-  private resetTasks(): void {
-    this.tasks.forEach((task, idx) => {
-      task.reset();
     });
   }
 

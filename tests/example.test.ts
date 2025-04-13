@@ -313,12 +313,12 @@ describe("Management App Unit Testing", () => {
       .send()
       .expect((res) => {
 
-        const taskId = res.body[0].id;
+        const reportId = res.body.tasks[0].id;
 
         expect(res.status).toEqual(200);
 
-        expect(taskId).not.toBeNullish();
-        expect(taskId).not.toBeEmpty();
+        expect(reportId).not.toBeNullish();
+        expect(reportId).not.toBeEmpty();
 
       })
       .end(function(err, res) {
@@ -335,7 +335,7 @@ describe("Management App Unit Testing", () => {
       .expect(200)
       .expect((res) => {
 
-        for (const item of res.body) {
+        for (const item of res.body.tasks) {
 
           const status = item.status;
 
@@ -366,7 +366,7 @@ describe("Management App Unit Testing", () => {
       .expect(200)
       .expect((res) => {
 
-        const item = res.body.filter((item: any) => item.id === 0)[0];
+        const item = res.body.tasks.filter((item: any) => item.id === 0)[0];
         expect(item).not.toBeNullish();
         expect(item).not.toBeEmpty();
         expect(item.status).toEqual("closed");
