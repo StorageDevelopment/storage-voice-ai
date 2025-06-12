@@ -5,7 +5,6 @@ import { StorageLocation } from "../models/storage-location";
 import { HttpError } from "../http-error";
 
 const putActions: any = {
-
   clearStatus: asyncHandler(async (req: Request, res: Response) => {
     const body = req.body;
     const action = body.action;
@@ -32,7 +31,6 @@ const putActions: any = {
     await datastore.setJson(key, locationObj);
 
     res.send(taskReport);
-
   }),
   updateTask: asyncHandler(async (req: Request, res: Response) => {
     //analyze the tool list and make the appropriate calls to the storage system
@@ -44,6 +42,15 @@ const putActions: any = {
     const gpsLatitude = body.gpsLatitude;
     const gpsLongitude = body.gpsLongitude;
 
+    const id = body.id || null;
+    const orderIdx = body.orderId || null;
+    const name = body.name || null;
+    const description = body.description || null;
+    const status = body.status || null;
+    const timestamp = body.timestamp || null;
+    const completedBy = body.timetsamp || null;
+    const comment = body.comment || null;
+    const isFullUpdate = body.isfullUpdate == "true" ? true : false;
 
     const datastore = await DatastoreFactory.getDatastore();
     const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
@@ -51,18 +58,28 @@ const putActions: any = {
 
     const taskReport = locationObj.getTaskReport();
     const tasklist = taskReport.getTasks();
-    
+
     //validate the itemId
     if (taskId < 0 || taskId >= tasklist.length)
       throw new HttpError("Item not found", 404);
-    
+
     const item = tasklist[taskId];
 
-    item.setStatus("closed");
-    item.setTimestamp( new Date().toISOString() );
+    item.setTimestamp(new Date().toISOString());
     item.setCompletedBy(`${userId}`);
     item.setGpsLatitude(gpsLatitude);
     item.setGpsLongitude(gpsLongitude);
+
+    if (isFullUpdate) {
+      item.setStatus(status);
+      item.setId(id);
+      item.setOrderIdx(orderIdx);
+      item.setTimestamp(timestamp);
+      item.setCompletedBy(completedBy);
+      item.setComment(comment);
+    } else {
+      item.setStatus("closed");
+    }
 
     await datastore.setJson(key, locationObj);
 
@@ -74,7 +91,7 @@ const putActions: any = {
     const locationShortName = req.params.locationShortName;
     const corpShortName = req.params.corpShortName;
     const taskId = body.taskId;
-    
+
     const datastore = await DatastoreFactory.getDatastore();
     const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
     const locationObj = await datastore.getJson(key, StorageLocation);
@@ -85,11 +102,11 @@ const putActions: any = {
     //validate the itemId
     if (taskId < 0 || taskId >= tasklist.length)
       throw new HttpError("Item not found", 404);
-    
+
     const item = tasklist[taskId];
 
     item.setComment(body.comment);
-    
+
     await datastore.setJson(key, locationObj);
 
     res.send(taskReport);
@@ -100,7 +117,7 @@ const putActions: any = {
     const locationShortName = req.params.locationShortName;
     const corpShortName = req.params.corpShortName;
     const comment = body.comment;
-    
+
     const datastore = await DatastoreFactory.getDatastore();
     const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
     const locationObj = await datastore.getJson(key, StorageLocation);
@@ -108,51 +125,57 @@ const putActions: any = {
     const taskReport = locationObj.getTaskReport();
 
     taskReport.setComment(comment);
-        
+
     await datastore.setJson(key, locationObj);
 
     res.send(taskReport);
-  })
+  }),
 };
 
-export const getTasklistById = asyncHandler(async (req: Request, res: Response) => {
-  //analyze the tool list and make the appropriate calls to the storage system
-  const body = req.body;
-  const locationShortName = req.params.locationShortName;
-  const corpShortName = req.params.corpShortName;
+export const getTasklistById = asyncHandler(
+  async (req: Request, res: Response) => {
+    //analyze the tool list and make the appropriate calls to the storage system
+    const body = req.body;
+    const locationShortName = req.params.locationShortName;
+    const corpShortName = req.params.corpShortName;
 
-  const datastore = await DatastoreFactory.getDatastore();
-  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
-  const locationObj = await datastore.getJson(key, StorageLocation);
+    const datastore = await DatastoreFactory.getDatastore();
+    const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+    const locationObj = await datastore.getJson(key, StorageLocation);
 
-  res.send(locationObj.getTaskReport());
-});
-
-export const putTasklistsController = asyncHandler(async (req: Request, res: Response) => {
-  //analyze the tool list and make the appropriate calls to the storage system
-  const body = req.body;
-  const method = req.method;
-  const action = body.action;
-
-  const actionFunction = putActions[action];
-
-  if (!actionFunction) {
-    res.status(404).send({ message: "Action not found" });
-    return;
+    res.send(locationObj.getTaskReport());
   }
+);
 
-  actionFunction(req, res);
-});
+export const putTasklistsController = asyncHandler(
+  async (req: Request, res: Response) => {
+    //analyze the tool list and make the appropriate calls to the storage system
+    const body = req.body;
+    const method = req.method;
+    const action = body.action;
 
-export const getTaskReports = asyncHandler(async (req: Request, res: Response) => {
-  const locationShortName = req.params.locationShortName;
-  const corpShortName = req.params.corpShortName;
+    const actionFunction = putActions[action];
 
-  const datastore = await DatastoreFactory.getDatastore();
-  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
-  const locationObj = await datastore.getJson(key, StorageLocation);
+    if (!actionFunction) {
+      res.status(404).send({ message: "Action not found" });
+      return;
+    }
 
-  const taskReports = locationObj.getTaskReports();
-  
-  res.send(taskReports);
-});
+    actionFunction(req, res);
+  }
+);
+
+export const getTaskReports = asyncHandler(
+  async (req: Request, res: Response) => {
+    const locationShortName = req.params.locationShortName;
+    const corpShortName = req.params.corpShortName;
+
+    const datastore = await DatastoreFactory.getDatastore();
+    const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+    const locationObj = await datastore.getJson(key, StorageLocation);
+
+    const taskReports = locationObj.getTaskReports();
+
+    res.send(taskReports);
+  }
+);
