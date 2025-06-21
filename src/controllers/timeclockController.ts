@@ -5,6 +5,7 @@ import { StorageLocation } from "../models/storage-location";
 import { HttpError } from "../http-error";
 import { CleaningReport } from "../models/cleaning-report";
 import { TimeclockEntry } from "../models/timeclock-entry";
+import { Stack } from "../utils";
 
 export const getTimeclockEntries = asyncHandler(async (req: Request, res: Response) => {
   const locationShortName = req.params.locationShortName;
@@ -24,6 +25,150 @@ export const getTimeclockEntries = asyncHandler(async (req: Request, res: Respon
   res.send(user.getTimeclockEntries());
 });
 
+export const getDailyTimeclockEntries = asyncHandler(async (req: Request, res: Response) => {
+  const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
+  const userId = parseInt(req.params.userId);
+  const datastore = await DatastoreFactory.getDatastore();
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+  const locationObj = await datastore.getJson(key, StorageLocation);
+
+  //get the the page
+  const page = parseInt(req.query.page as string) || 1;
+  const pageSize = parseInt(req.query.pageSize as string) || 10;
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+
+  const timezone = locationObj.getTimezone();
+  const users = locationObj.getUsers();
+
+  const user = users.find(user => user.getId() === userId);
+
+  if (!user) {
+    throw new HttpError("User not found", 404);
+  }
+
+  const groupedEntries = user.getGroupedTimeclockEntries(locationObj.getTimezone());
+
+  //sort the entries by date
+  const sortedEntries = Object.entries(groupedEntries).sort((a, b) => {
+    return new Date(b[0]).getTime() - new Date(a[0]).getTime(); // Sort by date descending
+  });
+
+  const paginatedEntries = sortedEntries.slice(startIndex, endIndex);
+
+  const output = paginatedEntries.map(([date, entries]) => {
+
+    return {
+      date,
+      info: getTimeclockEntriesInfo(entries, timezone)
+    }
+
+  });
+
+  res.send(output);
+
+});
+
+type TimeclockEventPair = {
+  inEvent: TimeclockEntry;
+  outEvent: TimeclockEntry
+  duration: number; // Duration in milliseconds
+};
+
+type TimeclockEntriesInfo = {
+  pairedEntries: TimeclockEventPair[];
+  unpairedEntries: TimeclockEntry[];
+  totalWorkedTime: number; // Total time worked in milliseconds
+  totalBreakTime: number; // Total break time in milliseconds
+  netWorkedTime: number; // Net worked time in milliseconds
+};
+
+function getTimeclockEntriesInfo(entries: TimeclockEntry[], timezone: string): TimeclockEntriesInfo {
+  const pairedEntries: TimeclockEventPair[] = [];
+  const unpairedEntries: TimeclockEntry[] = [];
+  let totalWorkedTime = 0;
+  let totalBreakTime = 0;
+
+  //first sort in ascending order by timestamp
+  entries.sort((a, b) => new Date(a.getTimestamp()).getTime() - new Date(b.getTimestamp()).getTime());
+
+  //now iterate through the entries and pair them
+  let eventStack = new Stack();
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i];
+    const entryType = entry.getType();
+    const timestamp = new Date(entry.getTimestamp());
+
+    if (entryType === 'clockIn') {
+      //check if we are already clocked in
+      if (!eventStack.isEmpty()) {
+        unpairedEntries.push(entry);
+        continue;
+      };
+
+      //if we are not clocked in, push the entry onto the stack
+      eventStack.push(entry);
+
+    } else if (entryType === 'clockOut') {
+      //check if we have a clock in entry to pair with
+      if (eventStack.peek().getType() !== 'clockIn') {
+        unpairedEntries.push(entry);
+        continue;
+      }
+
+      //if we have a clock in entry, pop it from the stack and create a paired entry
+      const clockInEntry = eventStack.pop();
+      const clockOutEntry = entry;
+      const workedTime = new Date(clockOutEntry.getTimestamp()).getTime() - new Date(clockInEntry.getTimestamp()).getTime();
+      totalWorkedTime += workedTime;
+
+      pairedEntries.push({
+        inEvent: clockInEntry,
+        outEvent: clockOutEntry,
+        duration: workedTime
+      });
+
+    } else if (entryType === 'breakIn') {
+      //check if we are already on a break
+      if (!eventStack.isEmpty() && eventStack.peek().getType() === 'breakIn') {
+        unpairedEntries.push(entry);
+        continue;
+      }
+
+      //if we are not on a break, push the entry onto the stack
+      eventStack.push(entry);
+
+    } else if (entryType === 'breakOut') {
+      //check if we have a break in entry to pair with
+      if (eventStack.peek().getType() !== 'breakIn') {
+        unpairedEntries.push(entry);
+        continue;
+      }
+
+      //if we have a clock in entry, pop it from the stack and create a paired entry
+      const breakInEntry = eventStack.pop();
+      const breakOutEntry = entry;
+      const breakTime = new Date(breakOutEntry.getTimestamp()).getTime() - new Date(breakInEntry.getTimestamp()).getTime();
+      totalBreakTime += breakTime;
+
+      pairedEntries.push({
+        inEvent: breakInEntry,
+        outEvent: breakOutEntry,
+        duration: breakTime
+      });
+
+    }
+  }
+
+  return {
+    pairedEntries,
+    unpairedEntries,
+    totalWorkedTime,
+    totalBreakTime,
+    netWorkedTime: totalWorkedTime - totalBreakTime
+  };
+}
 
 export const addTimeclockEntry = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system

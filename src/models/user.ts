@@ -1,4 +1,5 @@
 import { TimeclockEntry } from "./timeclock-entry";
+import { formatDate } from "../utils";
 
 export class User {
   private id: number;
@@ -94,5 +95,22 @@ export class User {
 
   public resetUserTimeclockEntries(): void {
     this.timeclockEntries = [];
+  }
+
+  public getGroupedTimeclockEntries(timezone:string): { [date: string]: TimeclockEntry[] } {
+    const grouped: { [date: string]: TimeclockEntry[] } = {};
+    
+    for (const entry of this.timeclockEntries) {
+      // Assumes TimeclockEntry has a 'date' or 'timestamp' property.
+      // Adjust property name as needed.
+      const dateObj = new Date( formatDate(entry.getTimestamp(),timezone, "yyyy-MM-dd'T'HH:mm:ss.SSS") );
+      const dateStr = dateObj.toISOString().split('T')[0]; // YYYY-MM-DD
+      if (!grouped[dateStr]) {
+        grouped[dateStr] = [];
+      }
+      grouped[dateStr].push(entry);
+    }
+
+    return grouped;
   }
 }
