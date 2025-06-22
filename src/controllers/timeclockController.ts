@@ -6,6 +6,9 @@ import { HttpError } from "../http-error";
 import { CleaningReport } from "../models/cleaning-report";
 import { TimeclockEntry } from "../models/timeclock-entry";
 import { Stack } from "../utils";
+import { TimeclockEntriesInfo } from "../models/timeclock-entries-info";
+import { TimeclockEventPair } from "../models/timeclock-event-pair";
+import { TimeclockSequenceEntry } from "../models/timeclock-sequence-entry";
 
 export const getTimeclockEntries = asyncHandler(async (req: Request, res: Response) => {
   const locationShortName = req.params.locationShortName;
@@ -70,23 +73,10 @@ export const getDailyTimeclockEntries = asyncHandler(async (req: Request, res: R
 
 });
 
-type TimeclockEventPair = {
-  inEvent: TimeclockEntry;
-  outEvent: TimeclockEntry
-  duration: number; // Duration in milliseconds
-};
-
-type TimeclockEntriesInfo = {
-  pairedEntries: TimeclockEventPair[];
-  unpairedEntries: TimeclockEntry[];
-  totalWorkedTime: number; // Total time worked in milliseconds
-  totalBreakTime: number; // Total break time in milliseconds
-  netWorkedTime: number; // Net worked time in milliseconds
-};
-
 function getTimeclockEntriesInfo(entries: TimeclockEntry[], timezone: string): TimeclockEntriesInfo {
   const pairedEntries: TimeclockEventPair[] = [];
   const unpairedEntries: TimeclockEntry[] = [];
+  const entrySequence: TimeclockSequenceEntry[] = [];
   let totalWorkedTime = 0;
   let totalBreakTime = 0;
 
@@ -109,10 +99,15 @@ function getTimeclockEntriesInfo(entries: TimeclockEntry[], timezone: string): T
 
       //if we are not clocked in, push the entry onto the stack
       eventStack.push(entry);
+      entrySequence.push({
+        timestamp: entry.getTimestamp(),
+        type: entryType,
+        hours: 0 // Placeholder, will be calculated later
+      });
 
     } else if (entryType === 'clockOut') {
       //check if we have a clock in entry to pair with
-      if (eventStack.peek().getType() !== 'clockIn') {
+      if (eventStack.isEmpty() || eventStack.peek().getType() !== 'clockIn') {
         unpairedEntries.push(entry);
         continue;
       }
@@ -121,12 +116,20 @@ function getTimeclockEntriesInfo(entries: TimeclockEntry[], timezone: string): T
       const clockInEntry = eventStack.pop();
       const clockOutEntry = entry;
       const workedTime = new Date(clockOutEntry.getTimestamp()).getTime() - new Date(clockInEntry.getTimestamp()).getTime();
-      totalWorkedTime += workedTime;
+      const workedTimeInHours = (workedTime / (1000 * 60 * 60)); // Convert to hours
+      const roundedWorkedTime = Math.floor(workedTimeInHours * 100) / 100; // Round to 2 decimal places
+      totalWorkedTime += roundedWorkedTime;
 
       pairedEntries.push({
         inEvent: clockInEntry,
         outEvent: clockOutEntry,
-        duration: workedTime
+        duration: roundedWorkedTime
+      });
+
+      entrySequence.push({
+        timestamp: entry.getTimestamp(),
+        type: entryType,
+        hours: roundedWorkedTime
       });
 
     } else if (entryType === 'breakIn') {
@@ -139,6 +142,13 @@ function getTimeclockEntriesInfo(entries: TimeclockEntry[], timezone: string): T
       //if we are not on a break, push the entry onto the stack
       eventStack.push(entry);
 
+      entrySequence.push({
+        timestamp: entry.getTimestamp(),
+        type: entryType,
+        hours: 0
+      });
+
+
     } else if (entryType === 'breakOut') {
       //check if we have a break in entry to pair with
       if (eventStack.peek().getType() !== 'breakIn') {
@@ -150,12 +160,21 @@ function getTimeclockEntriesInfo(entries: TimeclockEntry[], timezone: string): T
       const breakInEntry = eventStack.pop();
       const breakOutEntry = entry;
       const breakTime = new Date(breakOutEntry.getTimestamp()).getTime() - new Date(breakInEntry.getTimestamp()).getTime();
-      totalBreakTime += breakTime;
+      const breakTimeInHours = (breakTime / (1000 * 60 * 60)); // Convert to hours
+      const roundedBreakTime = Math.floor(breakTimeInHours * 100) / 100; // Round to 2 decimal places
+
+      totalBreakTime += roundedBreakTime;
 
       pairedEntries.push({
         inEvent: breakInEntry,
         outEvent: breakOutEntry,
-        duration: breakTime
+        duration: roundedBreakTime
+      });
+
+      entrySequence.push({
+        timestamp: entry.getTimestamp(),
+        type: entryType,
+        hours: roundedBreakTime
       });
 
     }
@@ -164,6 +183,7 @@ function getTimeclockEntriesInfo(entries: TimeclockEntry[], timezone: string): T
   return {
     pairedEntries,
     unpairedEntries,
+    sequenceEntries: entrySequence,
     totalWorkedTime,
     totalBreakTime,
     netWorkedTime: totalWorkedTime - totalBreakTime
