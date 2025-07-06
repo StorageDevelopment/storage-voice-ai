@@ -10,6 +10,7 @@ export class User {
   private password: string;
   private timeclockEntries: TimeclockEntry[] = [];
   private requiresPasswordChange: boolean;
+  private role: string; // Added role attribute
 
   constructor(data: any) {
     this.id = data.id ?? -1;
@@ -19,6 +20,7 @@ export class User {
     this.username = data.username ?? "";
     this.password = data.password ?? "";
     this.requiresPasswordChange = data.requiresPasswordChange ?? false;
+    this.role = data.role ?? "standard"; // Initialize role
 
     const timeclockEntries = data.timeclockEntries ?? [];
 
@@ -60,6 +62,10 @@ export class User {
     return this.requiresPasswordChange;
   }
 
+  public getRole(): string {
+    return this.role;
+  }
+
   // Setters
   public setId(id: number): void {
     this.id = id;
@@ -91,6 +97,10 @@ export class User {
 
   public setRequiresPasswordChange(requiresPasswordChange: boolean): void {
     this.requiresPasswordChange = requiresPasswordChange;
+  }
+
+  public setRole(role: string): void {
+    this.role = role;
   }
 
   public resetUserTimeclockEntries(): void {
