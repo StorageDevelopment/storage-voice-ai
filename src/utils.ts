@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { formatInTimeZone } from "date-fns-tz";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
+
 
 export function getDateDaysFromNow(days: number): Date {
   const now = new Date();
@@ -16,6 +17,13 @@ export function formatDate(utcDateStr: string, timezone: string, format: string)
   return formatInTimeZone(new Date(utcDateStr), timezone, format);
 };
 
+export function toUtcDate(dateStr: string, timezone: string): Date {
+  return fromZonedTime(dateStr, timezone);
+}
+
+/**
+ * Stack class implementing basic stack operations
+ */
 export class Stack {
 
   items: any[];

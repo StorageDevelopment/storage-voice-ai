@@ -5,10 +5,11 @@ import { StorageLocation } from "../models/storage-location";
 import { HttpError } from "../http-error";
 import { CleaningReport } from "../models/cleaning-report";
 import { TimeclockEntry } from "../models/timeclock-entry";
-import { Stack } from "../utils";
+import { Stack, toUtcDate } from "../utils";
 import { TimeclockEntriesInfo } from "../models/timeclock-entries-info";
 import { TimeclockEventPair } from "../models/timeclock-event-pair";
 import { TimeclockSequenceEntry } from "../models/timeclock-sequence-entry";
+import { TimeclockUserSummary } from "../models/timeclock-user-summary";
 
 export const getTimeclockEntries = asyncHandler(async (req: Request, res: Response) => {
   const locationShortName = req.params.locationShortName;
@@ -266,5 +267,114 @@ export const clearTimeclockEntry = asyncHandler(async (req: Request, res: Respon
   await datastore.setJson(key, locationObj);
 
   res.send(timeclockEntries);
+
+});
+
+export const getUserWorkSummaries = asyncHandler(async (req: Request, res: Response) => {
+  const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
+  const datastore = await DatastoreFactory.getDatastore();
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+  const locationObj = await datastore.getJson(key, StorageLocation);
+
+  const users = locationObj.getUsers();
+  const timezone = locationObj.getTimezone();
+
+  // Get date range from query parameters
+  const startDateStr = req.query.startDate as string;
+  const endDateStr = req.query.endDate as string;
+
+  let startDate: Date | null = new Date();
+  let endDate: Date | null = new Date();
+
+  //convert to utc date
+  if (startDateStr) startDate = toUtcDate(startDateStr, timezone);
+  if (endDateStr) endDate = toUtcDate(endDateStr, timezone);
+  
+  const summaries = users.map(user => {
+    // Filter entries by date range if provided
+    let entries = user.getTimeclockEntries();
+    if (startDate || endDate) {
+      entries = entries.filter(entry => {
+        const entryDate = new Date(entry.getTimestamp());
+        if (startDate && entryDate < startDate) return false;
+        if (endDate && entryDate > endDate) return false;
+        return true;
+      });
+    }
+
+    const info = getTimeclockEntriesInfo(entries, timezone);
+
+    return {
+      id: user.getId(),
+      firstName: user.getFirstName(),
+      lastName: user.getLastName(),
+      email: user.getEmail(),
+      username: user.getUsername(),
+      role: user.getRole(),
+      totalWorkedTime: info.totalWorkedTime,
+      totalBreakTime: info.totalBreakTime,
+      netWorkedTime: info.netWorkedTime
+    };
+  });
+
+  res.send(summaries);
+});
+
+export const getWorkSummary = asyncHandler(async (req: Request, res: Response) => {
+  const locationShortName = req.params.locationShortName;
+  const corpShortName = req.params.corpShortName;
+  const userId = parseInt(req.params.userId);
+  const datastore = await DatastoreFactory.getDatastore();
+  const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+  const locationObj = await datastore.getJson(key, StorageLocation);
+
+  const timezone = locationObj.getTimezone();
+  const users = locationObj.getUsers();
+
+  // Get date range from query parameters
+  const startDateStr = req.query.startDate as string;
+  const endDateStr = req.query.endDate as string;
+
+  let startDate: Date | null = new Date();
+  let endDate: Date | null = new Date();
+
+  //convert to utc date
+  if (startDateStr) startDate = toUtcDate(startDateStr, timezone);
+  if (endDateStr) endDate = toUtcDate(endDateStr, timezone);
+
+  const summaries = users.map(user => {
+
+    const userSummary = new TimeclockUserSummary({
+      firstName: user.getFirstName(),
+      lastName: user.getLastName(),
+      id: user.getId(),
+      summaries: []
+    });
+
+    return userSummary;
+  });
+
+  
+
+  // const groupedEntries = user.getGroupedTimeclockEntries(locationObj.getTimezone());
+
+  // //sort the entries by date
+  // const sortedEntries = Object.entries(groupedEntries).sort((a, b) => {
+  //   return new Date(b[0]).getTime() - new Date(a[0]).getTime(); // Sort by date descending
+  // });
+
+  // const paginatedEntries = sortedEntries.slice(startIndex, endIndex);
+
+  // const output = paginatedEntries.map(([date, entries]) => {
+
+  //   return {
+  //     date,
+  //     info: getTimeclockEntriesInfo(entries, timezone)
+  //   }
+
+  // });
+
+  res.send(summaries);
 
 });

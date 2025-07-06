@@ -20,7 +20,8 @@ import {
     getTimeclockEntries,
     addTimeclockEntry,
     clearTimeclockEntry,
-    getDailyTimeclockEntries
+    getDailyTimeclockEntries,
+    getWorkSummary
 } from "../controllers/timeclockController";
 
 import { clearDay } from "../controllers/adminController";
@@ -55,7 +56,7 @@ router.post(
 router.get(
     "/locations/:corpShortName/:locationShortName/cleaningreports",
     getCleaningReports
-); 
+);
 router.get(
     "/locations/:corpShortName/:locationShortName/:userId/timeclock",
     getTimeclockEntries
@@ -63,6 +64,10 @@ router.get(
 router.get(
     "/locations/:corpShortName/:locationShortName/:userId/timeclock/daily",
     getDailyTimeclockEntries
+);
+router.get(
+    "/locations/:corpShortName/:locationShortName/timeclock/summary",
+    getWorkSummary
 );
 router.post(
     "/locations/:corpShortName/:locationShortName/:userId/timeclock",
