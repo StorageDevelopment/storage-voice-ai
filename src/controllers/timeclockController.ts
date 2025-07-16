@@ -10,6 +10,7 @@ import { TimeclockEntriesInfo } from "../models/timeclock-entries-info";
 import { TimeclockEventPair } from "../models/timeclock-event-pair";
 import { TimeclockSequenceEntry } from "../models/timeclock-sequence-entry";
 import { TimeclockUserSummary } from "../models/timeclock-user-summary";
+import { TimeclockDateSummary } from "../models/timeclock-date-summary";
 
 export const getTimeclockEntries = asyncHandler(async (req: Request, res: Response) => {
   const locationShortName = req.params.locationShortName;
@@ -290,7 +291,7 @@ export const getUserWorkSummaries = asyncHandler(async (req: Request, res: Respo
   //convert to utc date
   if (startDateStr) startDate = toUtcDate(startDateStr, timezone);
   if (endDateStr) endDate = toUtcDate(endDateStr, timezone);
-  
+
   const summaries = users.map(user => {
     // Filter entries by date range if provided
     let entries = user.getTimeclockEntries();
@@ -336,8 +337,8 @@ export const getWorkSummary = asyncHandler(async (req: Request, res: Response) =
   const startDateStr = req.query.startDate as string;
   const endDateStr = req.query.endDate as string;
 
-  let startDate: Date | null = new Date();
-  let endDate: Date | null = new Date();
+  let startDate: Date = new Date();
+  let endDate: Date = new Date();
 
   //convert to utc date
   if (startDateStr) startDate = toUtcDate(startDateStr, timezone);
@@ -345,24 +346,45 @@ export const getWorkSummary = asyncHandler(async (req: Request, res: Response) =
 
   const summaries = users.map(user => {
 
+    let groupedEntries = user.getGroupedTimeclockEntries(timezone);
+
+    groupedEntries = Object.fromEntries(
+      Object.entries(groupedEntries).filter(([date, entries]) => {
+        if (startDate && new Date(date) < startDate) return false;
+        if (endDate && new Date(date) > endDate) return false;
+        return true;
+      })
+    );
+
+    //sort the entries by date
+    const sortedEntries = Object.entries(groupedEntries).sort((a, b) => {
+      return new Date(b[0]).getTime() - new Date(a[0]).getTime(); // Sort by date descending
+    });
+
+    const dateSummaries: TimeclockDateSummary[] = sortedEntries.map(([date, entries]) => {
+      const info = getTimeclockEntriesInfo(entries, timezone);
+
+      return new TimeclockDateSummary({
+        dateStr: date,
+        summary: info
+      });
+    });
+
+
+
     const userSummary = new TimeclockUserSummary({
       firstName: user.getFirstName(),
       lastName: user.getLastName(),
       id: user.getId(),
-      summaries: []
+      summaries: dateSummaries
     });
 
     return userSummary;
   });
 
-  
 
-  // const groupedEntries = user.getGroupedTimeclockEntries(locationObj.getTimezone());
 
-  // //sort the entries by date
-  // const sortedEntries = Object.entries(groupedEntries).sort((a, b) => {
-  //   return new Date(b[0]).getTime() - new Date(a[0]).getTime(); // Sort by date descending
-  // });
+ 
 
   // const paginatedEntries = sortedEntries.slice(startIndex, endIndex);
 
