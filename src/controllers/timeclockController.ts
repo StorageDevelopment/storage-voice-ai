@@ -47,13 +47,36 @@ export const getDailyTimeclockEntries = asyncHandler(async (req: Request, res: R
   const timezone = locationObj.getTimezone();
   const users = locationObj.getUsers();
 
+  // Get date range from query parameters
+  const startDateStr = req.query.startDate as string;
+  const endDateStr = req.query.endDate as string;
+
+  let startDate: Date | null = null;
+  let endDate: Date | null = null;
+
+  //convert to utc date
+  if (startDateStr) startDate = toUtcDate(startDateStr, timezone);
+  if (endDateStr) endDate = toUtcDate(endDateStr, timezone);
+
   const user = users.find(user => user.getId() === userId);
 
   if (!user) {
     throw new HttpError("User not found", 404);
   }
 
-  const groupedEntries = user.getGroupedTimeclockEntries(locationObj.getTimezone());
+  let groupedEntries = user.getGroupedTimeclockEntries(locationObj.getTimezone());
+
+  // Apply date range filter to grouped entries
+  if (startDate || endDate) {
+    groupedEntries = Object.fromEntries(
+      Object.entries(groupedEntries).filter(([date, entries]) => {
+        const entryDate = new Date(date);
+        if (startDate && entryDate < startDate) return false;
+        if (endDate && entryDate > endDate) return false;
+        return true;
+      }) 
+    );
+  }
 
   //sort the entries by date
   const sortedEntries = Object.entries(groupedEntries).sort((a, b) => {
