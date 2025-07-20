@@ -74,7 +74,7 @@ export const getDailyTimeclockEntries = asyncHandler(async (req: Request, res: R
         if (startDate && entryDate < startDate) return false;
         if (endDate && entryDate > endDate) return false;
         return true;
-      }) 
+      })
     );
   }
 
@@ -85,12 +85,12 @@ export const getDailyTimeclockEntries = asyncHandler(async (req: Request, res: R
 
   const paginatedEntries = sortedEntries.slice(startIndex, endIndex);
 
-  const output = paginatedEntries.map(([date, entries]) => {
+  const output = paginatedEntries.map(([dateStr, entries]) => {
 
-    return {
-      date,
-      info: getTimeclockEntriesInfo(entries, timezone)
-    }
+    return new TimeclockDateSummary({
+      dateStr,
+      summary: getTimeclockEntriesInfo(entries, timezone)
+    });
 
   });
 
@@ -407,7 +407,7 @@ export const getWorkSummary = asyncHandler(async (req: Request, res: Response) =
 
 
 
- 
+
 
   // const paginatedEntries = sortedEntries.slice(startIndex, endIndex);
 
