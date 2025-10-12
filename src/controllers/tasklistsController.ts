@@ -39,11 +39,8 @@ const putActions: any = {
     const body = req.body;
     const locationShortName = req.params.locationShortName;
     const corpShortName = req.params.corpShortName;
-    const taskId = body.taskId;
-    const userId = body.userId;
-    const gpsLatitude = body.gpsLatitude;
-    const gpsLongitude = body.gpsLongitude;
-
+    const id = body.id;
+    
 
     const datastore = await DatastoreFactory.getDatastore();
     const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
@@ -53,17 +50,24 @@ const putActions: any = {
     const tasklist = taskReport.getTasks();
     
     //validate the itemId
-    if (taskId < 0 || taskId >= tasklist.length)
+    if (id < 0 || id >= tasklist.length)
       throw new HttpError("Item not found", 404);
     
-    const item = tasklist[taskId];
-
-    item.setStatus("closed");
-    item.setTimestamp( new Date().toISOString() );
-    item.setCompletedBy(`${userId}`);
-    item.setGpsLatitude(gpsLatitude);
-    item.setGpsLongitude(gpsLongitude);
-
+    const item = tasklist[id];
+    
+    //do not update the id or orderIdx
+    //this.id = data.id;
+    //this.orderIdx = data.orderIdx;
+    
+    item.setName(body.name ?? item.getName());
+    item.setDescription(body.description ?? item.getDescription());
+    item.setComment(body.comment ?? item.getComment());
+    item.setStatus(body.status ?? item.getStatus());
+    item.setTimestamp(new Date().toISOString());
+    item.setCompletedBy(body.completedBy ?? item.getCompletedBy());
+    item.setGpsLatitude(body.gpsLatitude ?? item.getGpsLatitude());
+    item.setGpsLongitude(body.gpsLongitude ?? item.getGpsLongitude());
+    
     await datastore.setJson(key, locationObj);
 
     res.send(taskReport);
