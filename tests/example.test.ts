@@ -357,8 +357,9 @@ describe("Management App Unit Testing", () => {
       .put("/api/mgmt/locations/cmay/mspy/tasklist")
       .send({
         action: "updateTask",
-        userId: 1,
-        taskId: 0,
+        completedBy: 1,
+        id: 0,
+        status: "closed",
         gpsLatitude: 123.456,
         gpsLongitude: -65.2353
 
@@ -378,6 +379,58 @@ describe("Management App Unit Testing", () => {
         expect(item.gpsLatitude).not.toBeNullish();
         expect(item.gpsLongitude).not.toBeNullish();
         expect(item.completedBy).not.toBeNullish();
+
+      })
+      .end(function(err, res) {
+        if (err) throw err;
+        return done();
+      });
+
+  });
+
+  let newLength = 0;
+  let newId = 0;
+
+  it("should return 200 for creating checklist item", (done) => {
+
+    request(app)
+      .post("/api/mgmt/locations/cmay/mspy/tasklist")
+      .send({
+        action: "createTask",
+        name: "New Task",
+        description: "Task Description"
+      })
+      .expect(200)
+      .expect((res) => {
+
+        const tasks = res.body.tasks;
+        newLength = tasks.length;
+
+        //find the new task
+        const newTask = tasks.filter((item: any) => item.name === "New Task")[0];
+        newId = newTask.id;
+        expect(newLength).toBeGreaterThan(0);
+
+      })
+      .end(function(err, res) {
+        if (err) throw err;
+        return done();
+      });
+
+  });
+
+  it("should return 200 for deleting checklist item", (done) => {
+
+    request(app)
+      .delete(`/api/mgmt/locations/cmay/mspy/tasklist/${newId}`)
+      .send({
+      })
+      .expect(200)
+      .expect((res) => {
+
+        const tasks = res.body.tasks;
+        const updatedLength = tasks.length;
+        expect(updatedLength === newLength - 1).toBeTruthy();
 
       })
       .end(function(err, res) {
