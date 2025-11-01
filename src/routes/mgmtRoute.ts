@@ -47,6 +47,10 @@ router.put(
     "/locations/:corpShortName/:locationShortName/tasklist",
     putTasklistsController
 );
+router.post(
+    "/locations/:corpShortName/:locationShortName/tasklist",
+    putTasklistsController
+);
 router.get("/aws/presignedurl/:objectKey", getDownloadPresignedUrl);
 router.put("/aws/presignedurl/:objectKey", getUploadPresignedUrl);
 router.post(
