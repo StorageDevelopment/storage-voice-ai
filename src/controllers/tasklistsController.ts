@@ -167,6 +167,31 @@ const putActions: any = {
   })
 };
 
+export const deleteTask = asyncHandler(async (req: Request, res: Response) => {
+    const body = req.body;
+    const locationShortName = req.params.locationShortName;
+    const corpShortName = req.params.corpShortName;
+    const id = parseInt(req.params.taskId);
+
+    const datastore = await DatastoreFactory.getDatastore();
+    const key = `ma:storage-location:${corpShortName.toLowerCase()}:${locationShortName.toLowerCase()}`;
+    const locationObj = await datastore.getJson(key, StorageLocation);
+
+    const taskReport = locationObj.getTaskReport();
+    const tasklist = taskReport.getTasks();
+
+    // find task by id
+    const index = tasklist.findIndex((t: Task) => t.getId() === id);
+    if (index === -1) throw new HttpError("Item not found", 404);
+
+    // remove the task
+    tasklist.splice(index, 1);
+
+    await datastore.setJson(key, locationObj);
+
+    res.send(taskReport);
+  });
+
 export const getTasklistById = asyncHandler(async (req: Request, res: Response) => {
   //analyze the tool list and make the appropriate calls to the storage system
   const body = req.body;

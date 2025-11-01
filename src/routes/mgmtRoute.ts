@@ -6,7 +6,8 @@ import {
 import {
     getTasklistById,
     putTasklistsController,
-    getTaskReports
+    getTaskReports,
+    deleteTask
 } from "../controllers/tasklistsController";
 import {
     getDownloadPresignedUrl,
@@ -50,6 +51,10 @@ router.put(
 router.post(
     "/locations/:corpShortName/:locationShortName/tasklist",
     putTasklistsController
+);
+router.delete(
+    "/locations/:corpShortName/:locationShortName/tasklist/:taskId",
+    deleteTask
 );
 router.get("/aws/presignedurl/:objectKey", getDownloadPresignedUrl);
 router.put("/aws/presignedurl/:objectKey", getUploadPresignedUrl);
