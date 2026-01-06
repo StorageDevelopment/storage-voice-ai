@@ -18,7 +18,7 @@ export class InMemoryDatastore implements Datastore {
 
     const mspv = new StorageLocation({id: 1, name: 'My Storage Prescott Yonder', shortName:'mspy', corpShortName: 'cmay', tasks:[], users:[]});
     const mspvUsers = mspv.getUsers();
-    const mspvTasks = mspv.getTasks();
+    const mspvTasks = mspv.getTaskReport().getTasks()
 
     //users
     const aPurugganan = new User({id: 1, firstName: 'Alan', lastName: 'Purugganan', email: 'apurugganan@email.com', username: 'jp', password: 'jp'});

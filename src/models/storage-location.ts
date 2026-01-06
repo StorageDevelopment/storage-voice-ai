@@ -12,7 +12,6 @@ export class StorageLocation {
   private shortName: string;
   private corpShortName: string;
   private users: User[] = [];
-  private tasks: Task[] = [];
   private taskReports: TaskReport[] = [];
   private taskReport: TaskReport;
   private cleaningReports: CleaningReport[] = [];
@@ -35,11 +34,6 @@ export class StorageLocation {
     //build the users
     for (const user of data.users) {
       this.users.push(new User(user));
-    }
-
-    //build the tasks
-    for (const task of data.tasks) {
-      this.tasks.push(new Task(task));
     }
 
     const cleaningReports = data.cleaningReports ?? [];
@@ -68,10 +62,6 @@ export class StorageLocation {
 
   public getUsers(): User[] {
     return this.users;
-  }
-
-  public getTasks(): Task[] {
-    return this.tasks;
   }
 
   public getCleaningReports(): CleaningReport[] {
@@ -111,10 +101,6 @@ export class StorageLocation {
     this.users = users;
   }
 
-  public setTasks(tasks: Task[]): void {
-    this.tasks = tasks;
-  }
-
   public setCleaningReports(cleaningReports: CleaningReport[]): void {
     this.cleaningReports = cleaningReports;
   }
@@ -135,28 +121,6 @@ export class StorageLocation {
     });
     console.log("current day", isValid);
     return isValid;
-  }
-
-  public resetCurrentDay(): void {
-    //this.resetUsersCleaningReports();
-    if (this.validateCurrentDay(this.tasks)) {
-      console.log("Is a valid current days");
-      // The day is valid to archive
-      let date = new Date().toISOString();
-      let reportId = generateUniqueInteger();
-
-      let taskReport = new TaskReport({
-        id: reportId.toString(),
-        date: date,
-        tasks: this.tasks,
-      });
-      console.log("taskReport", taskReport);
-      this.taskReports.push(taskReport);
-      //this.resetTasks();
-    } else {
-      console.log("Is NOT a valid current day");
-      // We should email someone that the day is not valid
-    }
   }
 
   public closeDay(): void {
